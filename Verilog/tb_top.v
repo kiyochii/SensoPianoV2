@@ -201,14 +201,22 @@ module tb_top;
         release_key(0);
         #QUIET_OBS_NS;
 
-        // responde com a tecla correta mesmo com outra pressionada junto
-        $display("=== TESTE 6: modo aprender com tecla correta + extra ===");
+        // Acordes nao sao tentativas individuais e nao avancam a musica.
+        $display("=== TESTE 6: modo aprender ignora duas teclas simultaneas ===");
         press_key(2);
         press_key(9);
         #KEY_SETTLE_NS;
         release_key(2);
         release_key(9);
         #QUIET_OBS_NS;
+        if (leds_out !== ~12'h004 || mc_done) begin
+            $display("ERRO: acorde nao deveria avancar a nota esperada D");
+            $fatal;
+        end
+        if (uart_byte_count != 4) begin
+            $display("ERRO: esperado exatamente 4 bytes de nota, recebido %0d", uart_byte_count);
+            $fatal;
+        end
 
         $display("=== FIM DA SIMULACAO ===");
         $finish;
@@ -274,6 +282,10 @@ module tb_top;
                 end
                 3: if (uart_rx_byte !== 8'h30) begin
                     $display("ERRO: esperado 0x30 para primeira nota do modo aprender, recebido 0x%02h", uart_rx_byte);
+                    $fatal;
+                end
+                4: if (uart_rx_byte !== 8'h42) begin
+                    $display("ERRO: esperado 0x42 para segunda nota do modo aprender, recebido 0x%02h", uart_rx_byte);
                     $fatal;
                 end
             endcase

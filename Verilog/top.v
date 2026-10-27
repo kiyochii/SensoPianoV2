@@ -1,4 +1,7 @@
-module top (
+module top #(
+    parameter integer CLK_FREQ_HZ = 50_000_000,
+    parameter integer BAUD_RATE = 115_200
+) (
 
     // =========================================================
     // OBRIGATÓRIO (clock e reset)
@@ -60,14 +63,26 @@ module top (
     output wire        mc_correct_pulse,
     output wire        mc_wrong_pulse,
     output wire        mc_done,
-    output wire [2:0]  mc_state_dbg
+    output wire [2:0]  mc_state_dbg,
+
+    // Telemetria para o PC por adaptador USB-UART de 3,3 V.
+    output wire        pc_txd,
+    output wire        pc_uart_busy
 
 );
     wire load_key;
+    wire session_start_pulse;
+
+    // uart_tx usa oito ciclos de prescale por bit. Arredonda ao mais proximo.
+    localparam [15:0] UART_PRESCALE =
+        (CLK_FREQ_HZ + BAUD_RATE * 4) / (BAUD_RATE * 8);
 
     wire [7:0]  tx_tdata;
     wire        tx_tvalid;
     wire        tx_tready;
+    wire [7:0]  metrics_tdata;
+    wire        metrics_tvalid;
+    wire        metrics_tready;
 
     wire [11:0] mc_leds_out;
     wire [11:0] mc_rgb_r;
@@ -140,7 +155,8 @@ module top (
         .correct_pulse   (mc_correct_pulse),
         .wrong_pulse     (mc_wrong_pulse),
         .done            (mc_done),
-        .state_dbg       (mc_state_dbg)
+        .state_dbg       (mc_state_dbg),
+        .session_start_pulse(session_start_pulse)
     );
 
     // =========================================================
@@ -181,7 +197,31 @@ module top (
         .s_axis_tready (tx_tready),
         .txd           (esp_txd),
         .busy          (uart_busy),
-        .prescale      (16'd54)
+        .prescale      (UART_PRESCALE)
+    );
+
+    // Metricas do modo Aprender, independentes dos bytes de nota do ESP32.
+    uart_metrics_sender u_uart_metrics_sender (
+        .clk          (clk),
+        .rst          (rst),
+        .session_start(session_start_pulse),
+        .correct_pulse(mc_correct_pulse),
+        .wrong_pulse  (mc_wrong_pulse),
+        .session_done (mc_done),
+        .tx_tdata     (metrics_tdata),
+        .tx_tvalid    (metrics_tvalid),
+        .tx_tready    (metrics_tready)
+    );
+
+    uart_tx #(.DATA_WIDTH(8)) u_pc_uart_tx (
+        .clk          (clk),
+        .rst          (rst),
+        .s_axis_tdata (metrics_tdata),
+        .s_axis_tvalid(metrics_tvalid),
+        .s_axis_tready(metrics_tready),
+        .txd          (pc_txd),
+        .busy         (pc_uart_busy),
+        .prescale     (UART_PRESCALE)
     );
 
     // =========================================================

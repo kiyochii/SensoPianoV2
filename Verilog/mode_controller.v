@@ -24,7 +24,8 @@ module mode_controller (
     output reg         correct_pulse,
     output reg         wrong_pulse,
     output reg         done,
-    output reg  [2:0]  state_dbg
+    output reg  [2:0]  state_dbg,
+    output wire        session_start_pulse
 );
 
     localparam FREE_MODE   = 3'd0;
@@ -36,7 +37,8 @@ module mode_controller (
 
     reg [2:0] state, next_state;
     reg [2:0] song_index;
-    reg       expected_key_prev;
+    reg       attempt_correct;
+    reg       learn_armed;
 
     reg [6:0] expected_full;
     reg [3:0] expected_note;
@@ -44,15 +46,16 @@ module mode_controller (
 
     wire [11:0] expected_onehot;
     wire        expected_key_down;
-    wire        expected_key_pulse;
     wire        free_key_any;
     wire        free_key_valid;
+    wire        accept_attempt;
 
     assign expected_onehot   = (12'b000000000001 << expected_note);
     assign expected_key_down = keys_db[expected_note];
-    assign expected_key_pulse = expected_key_down & ~expected_key_prev;
+    assign session_start_pulse = (state == LEARN_IDLE) && mode_sel && start;
     assign free_key_any      = |keys_db;
     assign free_key_valid    = free_key_any && ((keys_db & (keys_db - 12'd1)) == 12'd0);
+    assign accept_attempt    = key_valid_pulse && learn_armed && free_key_valid;
 
     // ==========================================
     // ROM simples da música
@@ -112,17 +115,30 @@ module mode_controller (
         if (rst) begin
             state             <= FREE_MODE;
             song_index        <= 3'd0;
-            expected_key_prev <= 1'b0;
+            attempt_correct   <= 1'b0;
+            learn_armed       <= 1'b0;
         end else begin
             state             <= next_state;
-            expected_key_prev <= expected_key_down;
+
+            // Uma tentativa exige uma nova tecla individual apos soltar todas.
+            // Registra a decisao antes de mudar o indice da musica.
+            if (!mode_sel || state == LEARN_IDLE) begin
+                learn_armed <= 1'b0;
+            end else if (state == LEARN_WAIT) begin
+                if (!free_key_any)
+                    learn_armed <= 1'b1;
+                else if (accept_attempt) begin
+                    attempt_correct <= expected_key_down;
+                    learn_armed <= 1'b0;
+                end
+            end
 
             if (!mode_sel) begin
                 song_index <= 3'd0;
             end else begin
                 if (state == LEARN_IDLE && start)
                     song_index <= 3'd0;
-                else if (state == LEARN_CHECK && expected_key_prev) begin
+                else if (state == LEARN_CHECK && attempt_correct) begin
                     if (song_index != 3'd5)
                         song_index <= song_index + 3'd1;
                 end
@@ -165,14 +181,14 @@ module mode_controller (
             LEARN_WAIT: begin
                 if (!mode_sel)
                     next_state = FREE_MODE;
-                else if (expected_key_pulse)
+                else if (accept_attempt)
                     next_state = LEARN_CHECK;
             end
 
             LEARN_CHECK: begin
                 if (!mode_sel)
                     next_state = FREE_MODE;
-                else if (expected_key_prev) begin
+                else if (attempt_correct) begin
                     if (song_index == 3'd5)
                         next_state = LEARN_DONE;
                     else
@@ -267,7 +283,7 @@ module mode_controller (
             end
 
             LEARN_CHECK: begin
-                if (expected_key_prev)
+                if (attempt_correct)
                     correct_pulse = 1'b1;
                 else
                     wrong_pulse = 1'b1;
