@@ -13,7 +13,7 @@ module tb_uart_tx;
 
     task send_and_check;
         input [7:0] payload;
-        integer cycle, bit_cycles, bit_index;
+        integer cycle, bit_cycles, bit_index, next_progress_cycle;
         reg expected;
         begin
             bit_cycles = prescale * 8;
@@ -27,9 +27,15 @@ module tb_uart_tx;
                 end
                 begin
                     @(negedge txd); #1;
+                    next_progress_cycle = 0;
                     // Verifica cada ciclo do start, dos oito bits LSB-first e do stop.
                     for (cycle = 0; cycle < bit_cycles * 10; cycle = cycle + 1) begin
                         bit_index = cycle / bit_cycles;
+                        if (prescale == 65535 && cycle == next_progress_cycle) begin
+                            $display("PROGRESS: tb_uart_tx divisor=65535 bit=%0d/10 (%0d%%)",
+                                     bit_index + 1, bit_index * 10);
+                            next_progress_cycle = next_progress_cycle + bit_cycles;
+                        end
                         if (bit_index == 0) expected = 0;
                         else if (bit_index == 9) expected = 1;
                         else expected = payload[bit_index-1];
@@ -53,13 +59,17 @@ module tb_uart_tx;
         // Todos os bytes, com divisoes minima e seguinte, sem pausas artificiais.
         for (divisor = 1; divisor <= 2; divisor = divisor + 1) begin
             prescale = divisor;
+            $display("PROGRESS: tb_uart_tx divisor=%0d, verificando os 256 bytes", divisor);
             for (value = 0; value < 256; value = value + 1) send_and_check(value);
         end
         prescale = 54;
+        $display("PROGRESS: tb_uart_tx divisor=54, verificando 00/FF/55/AA");
         send_and_check(8'h00); send_and_check(8'hff);
         send_and_check(8'h55); send_and_check(8'haa);
         prescale = 65535;
+        $display("PROGRESS: tb_uart_tx divisor=65535, verificando 5242800 ciclos; esta etapa pode levar dezenas de segundos");
         send_and_check(8'ha5);
+        $display("PROGRESS: tb_uart_tx divisor=65535 concluido (100%%); verificando reset e recuperacao");
         prescale = 1;
         @(negedge clk); data = 8'h55; valid = 1;
         @(negedge clk); valid = 0;

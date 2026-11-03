@@ -1,0 +1,26 @@
+
+RUN: tb_uart_key_sender
+PASS: tb_uart_key_sender (96 notas/oitavas, backpressure, descarte e reset)
+modules/uart/tb/tb_uart_key_sender.v:70: $finish called at 25320000 (1ps)
+
+RUN: tb_uart_tx
+PROGRESS: tb_uart_tx divisor=1, verificando os 256 bytes
+PROGRESS: tb_uart_tx divisor=2, verificando os 256 bytes
+PROGRESS: tb_uart_tx divisor=54, verificando 00/FF/55/AA
+PROGRESS: tb_uart_tx divisor=65535, verificando 5242800 ciclos; esta etapa pode levar dezenas de segundos
+PROGRESS: tb_uart_tx divisor=65535 bit=1/10 (0%)
+PROGRESS: tb_uart_tx divisor=65535 bit=2/10 (10%)
+PROGRESS: tb_uart_tx divisor=65535 bit=3/10 (20%)
+PROGRESS: tb_uart_tx divisor=65535 bit=4/10 (30%)
+PROGRESS: tb_uart_tx divisor=65535 bit=5/10 (40%)
+PROGRESS: tb_uart_tx divisor=65535 bit=6/10 (50%)
+PROGRESS: tb_uart_tx divisor=65535 bit=7/10 (60%)
+PROGRESS: tb_uart_tx divisor=65535 bit=8/10 (70%)
+PROGRESS: tb_uart_tx divisor=65535 bit=9/10 (80%)
+PROGRESS: tb_uart_tx divisor=65535 bit=10/10 (90%)
+PROGRESS: tb_uart_tx divisor=65535 concluido (100%); verificando reset e recuperacao
+PASS: tb_uart_tx (518 frames 8N1, divisores 1/2/54/65535 e reset)
+modules/uart/tb/tb_uart_tx.v:84: $finish called at 106463480000 (1ps)
+
+RESULTADO: 2 aprovados, 0 reprovados, 2 total
+TEMPO_REAL: 32.58 s; codigo: 0

@@ -11,7 +11,8 @@ iverilog_bin=${IVERILOG:-iverilog}
 vvp_bin=${VVP:-vvp}
 # O RTL nao usa atrasos; a unidade de tempo vem de cada testbench.
 compile_options=(-g2012 -Wall -Wno-timescale)
-runtime_options=()
+# Exibe $display imediatamente mesmo quando a saida passa pelo tee.
+runtime_options=(-i)
 if [[ -n ${IVL_BASE:-} ]]; then
     compile_options+=(-B "$IVL_BASE")
     runtime_options+=(-M "$IVL_BASE")

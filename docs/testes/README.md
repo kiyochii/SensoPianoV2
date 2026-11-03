@@ -52,6 +52,25 @@ runtime. A compilacao usa `-g2012 -Wall -Wno-timescale`: os testbenches definem
 `1ns/1ps`, e o RTL nao tem atrasos de simulacao. Apenas os avisos de unidade
 de tempo herdada sao desabilitados.
 
+### Pausa aparente em `RUN: tb_uart_tx`
+
+O caso com divisor 65535 verifica **5.242.800 ciclos de clock** para apenas
+um quadro UART. Na reproducao registrada, a testbench inteira levou
+**29,33 segundos**; o tempo real varia conforme a maquina. O timeout de
+200 ms do testbench e tempo **simulado**, nao um limite de 200 ms no terminal.
+
+A testbench agora exibe `PROGRESS` por divisor e em cada bit do caso mais
+longo. O runner usa `vvp -i` para desabilitar o buffer de saida, inclusive
+ao passar por `tee`. A verificacao ciclo a ciclo e os 518 quadros foram
+preservados. Para executar somente esse teste:
+
+```sh
+bash Verilog/run_tests.sh tb_uart_tx
+```
+
+O [registro da investigacao](resultados.md#investigacao-da-pausa-em-tb_uart_tx)
+inclui os tempos medidos e o log apos a mudanca.
+
 ## Matriz de testes
 
 | Testbench / arquivo em `Verilog/` | Objeto | Verificacoes |

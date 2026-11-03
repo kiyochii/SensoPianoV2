@@ -60,6 +60,23 @@ nos contadores e a medicao de audio nas 12 notas e nas seis notas da
 atividade. Nenhuma falha funcional foi observada nos cenarios exercitados.
 Os limites de simulacao estao descritos na [documentacao](README.md#limites).
 
+## Investigacao da pausa em `tb_uart_tx`
+
+A execucao isolada da versao anterior terminou com PASS em **29,33 s**
+(tempo real), com codigo zero. O longo silencio correspondia ao quadro
+com divisor 65535: 5.242.800 ciclos verificados, sem mensagens intermediarias.
+O pipe para `tee` tambem permitia o armazenamento da saida em buffer.
+
+Foram adicionadas mensagens de progresso por divisor e por bit no caso
+mais longo. O runner agora usa `vvp -i`, com saida sem buffer. A verificacao
+dos 518 quadros, o timeout e o RTL foram preservados.
+
+A verificacao apos a mudanca executou `tb_uart_key_sender` e `tb_uart_tx`:
+**2 aprovados, 0 reprovados**, codigo zero, em **32,58 s** no total. As
+mensagens foram observadas enquanto o processo ainda estava rodando.
+Veja o [log dessa verificacao](execucao-uart-tx-2026-11-03.log).
+O resultado de 12 testes acima pertence a execucao integral anterior.
+
 ## Verificacao do executor
 
 Tambem foram executados `bash -n Verilog/run_tests.sh` e `git diff --check`,
