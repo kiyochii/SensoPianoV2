@@ -1,5 +1,10 @@
 # SensoPianoV2
 
+## ESP32 e webapp
+
+O firmware agora recebe notas e métricas da FPGA por duas UARTs e serve um
+webapp local pelo Wi-Fi do ESP32. Consulte [ligação, compilação e uso](ESP32/README.md).
+
 ## Primeira etapa: metricas da FPGA para o computador
 
 O `top` agora tem a saida `pc_txd` para transmitir as metricas do modo
@@ -100,4 +105,4 @@ Os testes sao simulacoes; ainda e necessario compilar no Quartus, conferir
 timing/pinagem e validar a recepcao com a placa e o adaptador reais.
 O debounce original esta configurado com `DEBOUNCE_TIME_MS=0`; ajuste-o
 para os botoes fisicos antes do ensaio, pois contatos mecanicos podem gerar
-tentativas repetidas. Esta etapa nao implementa ESP32, MQTT ou aplicativo.
+tentativas repetidas. O firmware ESP32 e o webapp local estao descritos em [ESP32/README.md](ESP32/README.md). MQTT nao e utilizado.

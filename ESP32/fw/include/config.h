@@ -1,6 +1,6 @@
 #pragma once
 
-// ESP32 classico / ESP32-WROOM DevKit. Ajuste para sua placa.
+// ESP32-WROOM-32 / DevKit (alvo PlatformIO: esp32dev).
 constexpr int NOTES_RX_PIN = 16;
 constexpr int METRICS_RX_PIN = 17;
 constexpr unsigned long FPGA_BAUD = 115200;

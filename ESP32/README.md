@@ -6,7 +6,7 @@ consulta `/api/events` a cada 150 ms e reconecta automaticamente.
 
 ## Placa e ligação
 
-O alvo padrão é **ESP32 clássico / ESP32-WROOM DevKit** (`esp32dev`), com duas
+O alvo padrão é **ESP32-WROOM-32 / DevKit** (`esp32dev`), com duas
 UARTs de hardware além da serial USB. Não use essa configuração sem adaptar
 em ESP32-C3/S2/S3, placas com PSRAM usando GPIO16/17 ou outra pinagem.
 
