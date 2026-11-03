@@ -95,8 +95,12 @@ cd Verilog
 bash run_tests.sh
 ```
 
-O script verifica a regressao de audio/notas e a telemetria UART, incluindo
-conteudo serial, contagem de tentativas, conclusao, reset e transmissor ocupado.
+O script executa 12 testbenches com verificacao automatica, cobrindo todos
+os modulos: debounce, registrador, ROM, fluxo de dados, unidade de controle,
+modos, audio, emissores de notas/metricas e UART. Inclui todos os 4096
+vetores de teclas, os 256 bytes UART, periodos de audio, saturacao, reset e
+transmissor ocupado. Consulte a [matriz de testes e instrucoes](docs/testes/README.md)
+e os [resultados registrados](docs/testes/resultados.md).
 Os executaveis de teste sao criados em diretorio temporario.
 Para uma instalacao portatil do Icarus, o script tambem aceita `IVERILOG` e
 `VVP` com os caminhos dos executaveis e `IVL_BASE` com o diretorio `lib/ivl`.

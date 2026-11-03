@@ -1,0 +1,76 @@
+
+RUN: tb_debouncer
+PASS: tb_debouncer (bounce, limiar, retencao, zero e reset)
+modules/utils/tb/tb_debounce.v:67: $finish called at 2371000 (1ps)
+
+RUN: tb_key_register
+PASS: tb_key_register (4096 cargas, retencao e prioridade do reset)
+modules/utils/tb/tb_key_register.v:33: $finish called at 163891000 (1ps)
+
+RUN: tb_music_rom
+PASS: tb_music_rom (64 combinacoes, quatro musicas e indices invalidos)
+modules/utils/tb/tb_music_rom.v:26: $finish called at 64000 (1ps)
+
+RUN: tb_fd
+PASS: tb_fd (4096 vetores: silencio, 12 teclas e 4083 acordes)
+tb_fd.v:42: $finish called at 409860000 (1ps)
+
+RUN: tb_uc
+PASS: tb_uc (pulso unico, tecla mantida, acorde, rearme e reset)
+tb_uc.v:50: $finish called at 2071000 (1ps)
+
+RUN: tb_mode_controller
+PASS: tb_mode_controller (12 teclas, LEDs/RGB, erros, seis notas e sessoes)
+tb_mode_controller.v:121: $finish called at 1511000 (1ps)
+
+RUN: tb_uart_key_sender
+PASS: tb_uart_key_sender (96 notas/oitavas, backpressure, descarte e reset)
+modules/uart/tb/tb_uart_key_sender.v:70: $finish called at 25320000 (1ps)
+
+RUN: tb_uart_tx
+PASS: tb_uart_tx (518 frames 8N1, divisores 1/2/54/65535 e reset)
+modules/uart/tb/tb_uart_tx.v:74: $finish called at 106463480000 (1ps)
+
+RUN: tb_uart_metrics_sender
+PASS: tb_uart_metrics_sender (snapshots, backpressure, saturacao, prioridades e reset)
+tb_metrics_uart.v:231: $finish called at 2646530000 (1ps)
+
+RUN: tb_metrics_uart
+PASS: tb_metrics_uart (UART 8N1 no fio, tentativas, acordes, conclusao e reset)
+tb_metrics_uart.v:421: $finish called at 40068780000 (1ps)
+
+RUN: tb_top
+=== TESTE 1: modo livre, tecla 3 ===
+[190 ns] key_valid_pulse | keys_reg=000000000000 | leds_out=111111110111 | leds_out_reg=111111111111
+[190 ns] mc_send_note | nota=3
+[230 ns] UART iniciou transmissao
+[82310 ns] UART byte[1] = 0x43
+[86650 ns] UART terminou transmissao
+=== TESTE 2: modo livre, tecla 7 ===
+[14001190 ns] key_valid_pulse | keys_reg=000000001000 | leds_out=111101111111 | leds_out_reg=111111110111
+[14001190 ns] mc_send_note | nota=7
+[14001230 ns] UART iniciou transmissao
+[14083310 ns] UART byte[2] = 0x47
+[14087650 ns] UART terminou transmissao
+=== TESTE 3: modo livre com duas teclas ===
+=== TESTE 4: entrar no modo aprender ===
+[32004130 ns] mc_send_note | nota=0
+[32004170 ns] UART iniciou transmissao
+[32086250 ns] UART byte[3] = 0x30
+[32090590 ns] UART terminou transmissao
+=== TESTE 5: resposta do usuario no modo aprender ===
+[44004210 ns] key_valid_pulse | keys_reg=000010000000 | leds_out=111111111110 | leds_out_reg=111101111111
+[44004230 ns] ACERTO
+[44004250 ns] mc_send_note | nota=2
+[44004290 ns] UART iniciou transmissao
+[44086370 ns] UART byte[4] = 0x42
+[44090710 ns] UART terminou transmissao
+=== TESTE 6: modo aprender ignora duas teclas simultaneas ===
+PASS: tb_top (regressao de audio, notas UART e acordes)
+tb_top.v:224: $finish called at 48006120000 (1ps)
+
+RUN: tb_audio_output
+PASS: tb_audio_output (12 notas, oitavas 3/4/5/6, duty cycle, LEDs e silencio)
+tb_audio_output.v:93: $finish called at 38282180000 (1ps)
+
+RESULTADO: 12 aprovados, 0 reprovados, 12 total

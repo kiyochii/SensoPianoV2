@@ -1,95 +1,69 @@
 `timescale 1ns / 1ps
 
 module tb_debouncer;
+    reg clk = 0;
+    always #10 clk = ~clk;
+    reg rst_n = 0, button_in = 0;
+    wire filtered, bypass;
+    integer i;
 
-    reg clk;
-    reg rst_n;
-    reg button_in;
-    wire button_out;
+    // Escala reduzida: limiar de cinco ciclos, mais sincronizacao.
+    debouncer #(.CLK_FREQ(1000), .DEBOUNCE_TIME_MS(5)) dut
+        (.clk(clk), .rst_n(rst_n), .button_in(button_in), .button_out(filtered));
+    debouncer #(.CLK_FREQ(1000), .DEBOUNCE_TIME_MS(0)) zero_delay
+        (.clk(clk), .rst_n(rst_n), .button_in(button_in), .button_out(bypass));
 
-    // instância com debounce rápido (para simulação)
-    debouncer #(
-        .CLK_FREQ(1000),          // 1 kHz
-        .DEBOUNCE_TIME_MS(5)      // 5 ms
-    ) dut (
-        .clk(clk),
-        .rst_n(rst_n),
-        .button_in(button_in),
-        .button_out(button_out)
-    );
-
-    // clock: 1 kHz → período = 1 ms → 1_000_000 ns
-    initial begin
-        clk = 0;
-        forever #500_000 clk = ~clk;
-    end
-
-    initial begin
-        $dumpfile("tb_debouncer.vcd");
-        $dumpvars(0, tb_debouncer);
-
-        // reset
-        rst_n = 0;
-        button_in = 0;
-        #2_000_000;
-        rst_n = 1;
-
-        $display("=== INICIO ===");
-
-        // ------------------------------------------------
-        // TESTE 1: bounce ao pressionar
-        // ------------------------------------------------
-        $display("=== Teste 1: bounce pressionando ===");
-
-        // simula bounce (oscila rápido)
-        button_in = 1; #200_000;
-        button_in = 0; #200_000;
-        button_in = 1; #200_000;
-        button_in = 0; #200_000;
-        button_in = 1;
-
-        // espera debounce estabilizar
-        #10_000_000;
-
-        // ------------------------------------------------
-        // TESTE 2: segurando pressionado
-        // ------------------------------------------------
-        $display("=== Teste 2: segurando ===");
-        #5_000_000;
-
-        // ------------------------------------------------
-        // TESTE 3: bounce ao soltar
-        // ------------------------------------------------
-        $display("=== Teste 3: bounce soltando ===");
-
-        button_in = 0; #200_000;
-        button_in = 1; #200_000;
-        button_in = 0; #200_000;
-        button_in = 1; #200_000;
-        button_in = 0;
-
-        #10_000_000;
-
-        // ------------------------------------------------
-        // TESTE 4: múltiplos cliques rápidos
-        // ------------------------------------------------
-        $display("=== Teste 4: múltiplos cliques ===");
-
-        repeat (3) begin
-            button_in = 1;
-            #8_000_000;
-            button_in = 0;
-            #8_000_000;
+    task tick;
+        begin @(posedge clk); #1; end
+    endtask
+    task drive;
+        input value;
+        begin @(negedge clk); button_in = value; end
+    endtask
+    task check;
+        input expected;
+        begin
+            if (filtered !== expected)
+                $fatal(1, "Debounce: esperado %b, recebido %b", expected, filtered);
         end
+    endtask
 
-        $display("=== FIM ===");
-        #5_000_000;
+    initial begin #10000; $fatal(1, "Timeout debounce"); end
+    initial begin
+        tick; check(0);
+        @(negedge clk); rst_n = 1;
+        repeat (4) begin
+            drive(1);
+            repeat (4) begin tick; check(0); end
+            drive(0);
+            repeat (5) begin tick; check(0); end
+        end
+        drive(1);
+        for (i = 0; i < 7; i = i + 1) begin
+            tick; check(0);
+            if (i == 1 && bypass !== 0) $fatal(1, "Sincronizacao antecipada");
+            if (i == 2 && bypass !== 1) $fatal(1, "Debounce zero: latencia incorreta");
+        end
+        tick; check(1);
+        repeat (10) begin tick; check(1); end
+        repeat (4) begin
+            drive(0);
+            repeat (4) begin tick; check(1); end
+            drive(1);
+            repeat (5) begin tick; check(1); end
+        end
+        drive(0);
+        repeat (7) begin tick; check(1); end
+        tick; check(0);
+        drive(1);
+        repeat (8) tick;
+        check(1);
+        // Reset ativo baixo e assincrono, fora da borda de clock.
+        @(negedge clk); #2; rst_n = 0; #1;
+        if (filtered !== 0 || bypass !== 0) $fatal(1, "Reset assincrono debounce");
+        @(negedge clk); rst_n = 1; button_in = 0;
+        repeat (10) begin tick; check(0); end
+        $display("PASS: tb_debouncer (bounce, limiar, retencao, zero e reset)");
         $finish;
     end
-
-    // debug no terminal
-    always @(posedge clk) begin
-        $display("[%0t ns] in=%b out=%b", $time, button_in, button_out);
-    end
-
 endmodule

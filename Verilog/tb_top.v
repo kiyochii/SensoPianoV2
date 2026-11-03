@@ -109,8 +109,9 @@ module tb_top;
 
     task pulse_start;
         begin
+            @(negedge clk);
             start = 1'b1;
-            #20;
+            @(negedge clk);
             start = 1'b0;
         end
     endtask
@@ -119,6 +120,7 @@ module tb_top;
     // Test sequence
     // =========================================================
     initial begin
+        $timeformat(-9, 0, "", 0);
         pwm_edge_count = 0;
         edge_snapshot  = 0;
         uart_byte_count = 0;
@@ -218,8 +220,13 @@ module tb_top;
             $fatal;
         end
 
-        $display("=== FIM DA SIMULACAO ===");
+        $display("PASS: tb_top (regressao de audio, notas UART e acordes)");
         $finish;
+    end
+
+    initial begin
+        #100_000_000;
+        $fatal(1, "Timeout na regressao top");
     end
 
     // =========================================================

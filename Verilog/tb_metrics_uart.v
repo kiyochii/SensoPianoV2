@@ -190,6 +190,33 @@ module tb_uart_metrics_sender;
         receive_frame("M,65534,00001,65535,0\015\012");
         expect_quiet;
 
+        // Mesmo saturado, o indicador de conclusao ainda precisa ser enviado.
+        @(negedge clk); session_done = 1;
+        receive_frame("M,65534,00001,65535,1\015\012");
+        expect_quiet;
+        @(negedge clk); session_done = 0;
+
+        // Inicio tem prioridade sobre pulsos; acerto tem prioridade sobre erro.
+        @(negedge clk);
+        session_start = 1; correct_pulse = 1; wrong_pulse = 1;
+        @(negedge clk);
+        session_start = 0; correct_pulse = 0; wrong_pulse = 0;
+        repeat (3) @(negedge clk);
+        correct_pulse = 1; wrong_pulse = 1;
+        @(negedge clk); correct_pulse = 0; wrong_pulse = 0;
+        receive_frame("M,00000,00000,00000,0\015\012");
+        receive_frame("M,00001,00000,00001,0\015\012");
+        expect_quiet;
+
+        // Nova sessao durante uma linha: termina a antiga sem misturar os totais.
+        pulse(2);
+        repeat (3) @(negedge clk);
+        pulse(0);
+        pulse(1);
+        receive_frame("M,00001,00001,00002,0\015\012");
+        receive_frame("M,00001,00000,00001,0\015\012");
+        expect_quiet;
+
         // Reset descarta uma mensagem pendente e volta a aguardar uma sessao.
         pulse(0);
         repeat (3) @(negedge clk);
@@ -200,7 +227,7 @@ module tb_uart_metrics_sender;
         pulse(0);
         receive_frame("M,00000,00000,00000,0\015\012");
         expect_quiet;
-        $display("PASS: sender, snapshots, backpressure, saturacao e reset");
+        $display("PASS: tb_uart_metrics_sender (snapshots, backpressure, saturacao, prioridades e reset)");
         $finish;
     end
 endmodule
@@ -390,7 +417,7 @@ module tb_metrics_uart;
         play_key(0);
         await_metrics(1,0,1,0);
         no_new_frames;
-        $display("PASS: UART 8N1 no fio, acertos/erros, acordes, conclusao e nova sessao");
+        $display("PASS: tb_metrics_uart (UART 8N1 no fio, tentativas, acordes, conclusao e reset)");
         $finish;
     end
 endmodule
