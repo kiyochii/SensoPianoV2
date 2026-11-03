@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SensoPiano · Monitor</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#10151d;color:#edf3fc}*{box-sizing:border-box}body{max-width:1050px;margin:auto;padding:28px 18px}header{display:flex;justify-content:space-between;align-items:center;gap:20px}h1{margin-bottom:4px;font-size:28px}p{color:#a6b4c9}#connection{color:#ffc875}section{background:#1a2330;border:1px solid #304054;border-radius:16px;padding:22px;margin:20px 0}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.value{display:block;font-size:30px;margin-top:8px}label,small{color:#a6b4c9}progress{width:100%;height:16px;accent-color:#65dfb2}#piano{display:flex;gap:3px;height:115px;margin-top:18px}.key{flex:1;background:#eaf0f8;color:#1a2330;border-radius:0 0 7px 7px;display:flex;align-items:end;justify-content:center;padding-bottom:12px;font-size:12px}.key.black{background:#35435a;color:white}.key.active{background:#65dfb2;color:#10151d}#lastNote{font-size:36px;color:#65dfb2}#warning{color:#ffc875;white-space:pre-line}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:290px;overflow:auto;font-size:12px;color:#c4d3e8}button{background:#304054;color:#edf3fc;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}#rx{line-height:1.8}@media(max-width:600px){.cards{grid-template-columns:repeat(2,1fr)}header{align-items:start;flex-direction:column}.key{font-size:10px}}
+</style>
+<header><div><h1>SensoPiano</h1><p>Notas e aprendizado em tempo real</p></div><span id="connection" role="status">Conectando ao ESP32…</span></header>
+<p id="warning" role="alert"></p>
+<section><label>Última nota recebida</label><div id="lastNote">—</div><div id="piano" aria-label="Notas da última oitava recebida"></div><p>O protocolo envia eventos de nota, sem mensagem de soltura da tecla.</p></section>
+<section><div class="cards"><div><label>Acertos</label><strong class="value" id="correct">—</strong></div><div><label>Erros</label><strong class="value" id="wrong">—</strong></div><div><label>Tentativas</label><strong class="value" id="attempts">—</strong></div><div><label>Acurácia</label><strong class="value" id="accuracy">—</strong></div></div><p id="session">Aguardando métricas da FPGA</p><progress id="progress" max="6" value="0" aria-label="Progresso da música"></progress><small>Música atual: 6 notas</small></section>
+<section><h2>Recepção UART</h2><div id="rx">Aguardando dados…</div></section>
+<section><div class="row"><h2>Histórico recebido</h2><button id="clear" type="button">Limpar visualização</button></div><p>Notas, métricas e bytes brutos em hexadecimal. Últimos 150 eventos nesta tela.</p><pre id="log" aria-label="Histórico de eventos"></pre></section>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const keys = names.map(name => {
+  const key = document.createElement('div');
+  key.className = 'key' + (name.includes('#') ? ' black' : '');
+  key.textContent = name;
+  $('piano').append(key);
+  return key;
+});
+let cursor = 0, boot = '', lost = 0, lines = [];
+$('clear').onclick = () => { lines = []; $('log').textContent = ''; };
+function noteName(note) { return names[note.pitch] + note.octave; }
+function render(data) {
+  if (data.reset) { cursor = 0; lost = 0; lines = []; }
+  lost += data.dropped;
+  boot = data.boot;
+  if (data.note) {
+    $('lastNote').textContent = noteName(data.note);
+    keys.forEach((key,i) => key.classList.toggle('active', i === data.note.pitch));
+  } else {
+    $('lastNote').textContent = '—';
+    keys.forEach(key => key.classList.remove('active'));
+  }
+  const m = data.metrics;
+  for (const field of ['correct','wrong','attempts']) $(field).textContent = m ? m[field] : '—';
+  $('accuracy').textContent = m && m.attempts ? (100 * m.correct / m.attempts).toFixed(1) + '%' : '—';
+  $('progress').value = m ? m.correct : 0;
+  $('session').textContent = !m ? 'Aguardando métricas da FPGA' : m.done ? 'Música concluída' : `Progresso: ${m.correct} de 6 notas`;
+  const rx = data.rx;
+  $('rx').textContent = `Notas: ${rx.notes} bytes · Métricas: ${rx.metrics} bytes · Notas inválidas: ${rx.invalidNotes} · Linhas inválidas: ${rx.invalidLines} · Erros UART: ${rx.uartErrors}`;
+  $('warning').textContent = [lost ? `${lost} eventos saíram do histórico do ESP32 antes da leitura. Os totais exibidos estão atualizados.` : '', rx.uartErrors ? 'A UART detectou erros. Confira ligação, baud rate e volume de dados.' : ''].filter(Boolean).join('\n');
+  for (const event of data.events) {
+    let value = event.hex ? `HEX ${event.hex}` : '';
+    if (event.type === 'note') value += ` · ${noteName(event.note)}`;
+    if (event.type === 'metrics') value = JSON.stringify(event.metrics);
+    lines.push(`#${event.id} ${(event.ms / 1000).toFixed(3)}s ${event.source} · ${value}`);
+  }
+  lines = lines.slice(-150);
+  if (data.events.length || data.reset) {
+    $('log').textContent = lines.join('\n');
+    $('log').scrollTop = $('log').scrollHeight;
+  }
+  cursor = data.next;
+}
+async function poll() {
+  let wait = 150;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+  try {
+    const response = await fetch(`/api/events?after=${cursor}&boot=${encodeURIComponent(boot)}`, {cache:'no-store',signal:controller.signal});
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    render(data);
+    $('connection').textContent = 'Conectado ao ESP32';
+    $('connection').style.color = '#65dfb2';
+    if (data.next < data.latest) wait = 0;
+  } catch (error) {
+    $('connection').textContent = 'Sem conexão · tentando novamente…';
+    $('connection').style.color = '#ffc875';
+    wait = 1500;
+  } finally {
+    clearTimeout(timer);
+    setTimeout(poll, wait);
+  }
+}
+poll();
+</script>
+</html>
