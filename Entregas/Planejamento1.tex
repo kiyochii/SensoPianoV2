@@ -1,0 +1,165 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage[a4paper,top=2.0cm,bottom=2.2cm,left=2.0cm,right=2.0cm]{geometry}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array,tabularx,longtable}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{helvet}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{uspblue}{HTML}{092E87}
+\definecolor{headergray}{HTML}{D0D0D0}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\setlength{\parindent}{1.0cm}
+\setlength{\parskip}{0.18em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\setlist[itemize]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.2cm,itemsep=3pt,topsep=3pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{14pt}
+
+\titleformat{\section}
+  {\large\bfseries\scshape\color{uspblue}}{\thesection}{0.7em}{}
+\titleformat{\subsection}
+  {\normalsize\bfseries\scshape}{\thesubsection}{0.7em}{}
+\titlespacing*{\section}{0pt}{1.15em}{0.5em}
+\titlespacing*{\subsection}{0pt}{0.85em}{0.3em}
+
+\begin{document}
+\justifying
+
+\begin{center}
+\includegraphics[width=0.82\textwidth]{images/usp_pcs_logos.png}\\[0.35cm]
+{\large ESCOLA POLITÉCNICA DA UNIVERSIDADE DE SÃO PAULO}\\
+{\normalsize Departamento de Engenharia de Computação e Sistemas Digitais}\\[0.2cm]
+{\normalsize\bfseries\color{uspblue} PCS3645 -- LABORATÓRIO DE PROJETO DE SISTEMAS DIGITAIS II}
+\end{center}
+
+\vspace{0.15cm}
+\noindent\fbox{\begin{minipage}{0.965\textwidth}
+\begin{center}
+{\large\bfseries\color{uspblue} SEMANA 1 -- RELATO DAS ATIVIDADES}\\[0.22cm]
+{\large Projeto SensoPiano -- Piano interativo para aprendizagem musical}\\[0.12cm]
+{\normalsize Relato da Bancada B5 -- Turma 5 -- Prof. Paulo Cugnasca}\\[0.12cm]
+{\normalsize Data: 27 de outubro de 2026}
+\end{center}
+\end{minipage}}
+
+\vspace{0.15cm}
+\begin{tabularx}{0.965\textwidth}{|Y|L{5.0cm}|}
+\hline
+\rowcolor{headergray}\textbf{Integrante} & \textbf{Número USP}\\
+\hline
+Dan Kiyochi Shoji & 15446687\\
+\hline
+Henrique Mantovan Carvalho & 15459177\\
+\hline
+Kauê Barbosa Moreira da Rocha & 14586112\\
+\hline
+Yuhang Fang & 18442107\\
+\hline
+\end{tabularx}
+
+\section{Introdução}
+
+O SensoPiano é um piano interativo de 12 teclas, com luzes e sons, pensado para apoiar a aprendizagem musical de crianças com Transtorno do Espectro Autista (TEA). O projeto prevê os modos Livre e Aprender e o uso acompanhado por um mediador. O aplicativo web planejado deverá apresentar informações como acurácia atual e evolução das atividades.
+
+Este relato registra as atividades da primeira semana da Bancada B5. O grupo concluiu as atividades introdutórias: adaptação inicial do código da disciplina passada, montagem baseada no esquemático de bancada do SensoPiano, desenho do dashboard no Figma e mock da interface. A comunicação entre os módulos foi implementada em um único sentido nesta etapa; a implementação bidirecional continua pendente.
+
+O grupo também apresentou o pitch de 1,5 minuto sobre o SensoPiano e as atividades da semana.
+
+\section{Atividades realizadas}
+
+A aula foi conduzida como uma primeira aproximação ao projeto. As atividades priorizaram a familiarização com o código, a montagem orientada pelo esquemático e a criação inicial da interface, registrando o que deverá ser aprofundado nas próximas etapas.
+
+\begin{longtable}{|C{0.8cm}|L{3.0cm}|L{7.2cm}|C{1.8cm}|}
+\hline
+\rowcolor{headergray}\textbf{ID} & \textbf{Atividade planejada} & \textbf{Realização e resultado} & \textbf{Status}\\
+\hline
+\endfirsthead
+\hline
+\rowcolor{headergray}\textbf{ID} & \textbf{Atividade planejada} & \textbf{Realização e resultado} & \textbf{Status}\\
+\hline
+\endhead
+1 & Primeiro código & O grupo retomou e modificou o código do projeto desenvolvido na disciplina passada, iniciando sua adaptação ao SensoPiano. & Concluída\\
+\hline
+2 & Montagem baseada no esquemático & A montagem de bancada foi realizada tendo como referência o documento \textit{SensoPiano -- Esquemático de bancada, Revisão A}. O esquemático reúne a interface e alimentação, as 12 teclas e controles, os LEDs e os circuitos de áudio e volume. & Concluída\\
+\hline
+3 & Dashboard no Figma & Foi desenhada uma primeira interface para o mediador, contemplando a apresentação de métricas e informações da atividade. & Concluída\\
+\hline
+4 & Mock do dashboard & Foi preparado um mock para demonstrar visualmente a proposta do dashboard. & Concluída\\
+\hline
+\end{longtable}
+
+\section{Desenvolvimento técnico e comunicação}
+
+Além das atividades de concepção e prototipagem, o grupo iniciou a implementação da comunicação prevista para o sistema. No estado atual, a comunicação foi implementada apenas de forma unidirecional. O fluxo de retorno ainda não foi implementado, portanto a comunicação bidirecional completa permanece como trabalho futuro.
+
+Essa limitação foi registrada para orientar a continuidade do desenvolvimento. Na próxima etapa, o grupo deverá definir e implementar o sentido inverso da comunicação, integrar os comandos e eventos necessários e verificar o funcionamento do fluxo completo entre os módulos. Este relato não atribui resultados de latência, confiabilidade ou testes quantitativos que não foram registrados.
+
+\section{Verificação das entregas}
+
+O grupo revisou as atividades previstas para a primeira aula e confirmou sua conclusão. A verificação desta semana foi qualitativa e adequada ao caráter introdutório das atividades.
+
+\begin{itemize}
+\item O código da disciplina passada foi modificado como ponto de partida para o projeto.
+\item A montagem de bancada foi realizada com base no esquemático do SensoPiano, Revisão A.
+\item A tela do dashboard e o mock foram preparados para comunicar a proposta de acompanhamento ao mediador.
+\item A comunicação foi implementada em um sentido; o sentido inverso e a comunicação bidirecional permanecem pendentes.
+\end{itemize}
+
+A montagem foi orientada pelo esquemático, enquanto o dashboard e o mock continuam sendo representações iniciais da interface. A realização da montagem, por si só, não comprova validação de usabilidade ou desempenho final. Caso sejam usados valores no mock, eles devem ser tratados como dados ilustrativos, não como métricas de uma criança ou resultados de sessão.
+
+\section{Riscos e pontos de atenção}
+
+\begin{tabularx}{\textwidth}{|L{4.0cm}|Y|L{4.2cm}|}
+\hline
+\rowcolor{headergray}\textbf{Risco ou pendência} & \textbf{Situação ao final da semana} & \textbf{Ação de acompanhamento}\\
+\hline
+Problemas na implementação & O código foi modificado como primeiro passo; a evolução do projeto ainda depende de integração e refinamento. & Preservar uma versão funcional, registrar alterações e resolver dependências gradualmente.\\
+\hline
+Componente físico inadequado & A montagem foi realizada conforme o esquemático; a adequação física e as dimensões finais ainda precisam ser verificadas. & Conferir escala e compatibilidade dos componentes antes de consolidar a montagem final.\\
+\hline
+Representação preliminar da interface & O dashboard e o mock ainda representam uma proposta inicial. & Refinar as telas e comparar a interface com os requisitos nas próximas aulas.\\
+\hline
+Comunicação ainda unidirecional & Um sentido de comunicação foi implementado; o retorno ainda está pendente. & Implementar e verificar o sentido inverso antes de considerar a integração bidirecional concluída.\\
+\hline
+\end{tabularx}
+
+\section{Próximas etapas}
+
+Com base no trabalho realizado, o grupo planeja dar continuidade ao projeto nas seguintes frentes:
+
+\begin{enumerate}
+\item revisar a montagem realizada a partir do esquemático e conferir a adequação física dos componentes;
+\item revisar e evoluir o código iniciado a partir do projeto anterior;
+\item implementar o sentido inverso da comunicação e verificar o fluxo bidirecional entre os módulos;
+\item aprofundar as métricas, a interface do dashboard e a integração com o aplicativo;
+\item registrar evidências de verificação conforme os testes técnicos forem executados.
+\end{enumerate}
+
+A integração de servo, métricas, UART, MQTT e avaliação acompanhada de uso permanece no planejamento das aulas seguintes. Qualquer avaliação com crianças deverá ocorrer em etapa própria, com acompanhamento e consentimento aplicáveis.
+
+\section{Conclusão}
+
+Na Semana 1, a Bancada B5 concluiu as atividades introdutórias planejadas para o SensoPiano. O grupo iniciou a adaptação do código da disciplina passada, realizou a montagem com base no esquemático de bancada e preparou o dashboard e seu mock.
+
+Como resultado técnico, a comunicação entre módulos foi implementada em um único sentido. A comunicação bidirecional ainda será implementada e verificada nas próximas etapas. O trabalho da semana estabeleceu uma base de projeto e deixou claros os próximos pontos de desenvolvimento, sem antecipar validações que ainda não foram realizadas.
+
+\end{document}
