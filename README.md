@@ -35,12 +35,11 @@ nesta etapa. Os GPIOs da DE0-CV operam em 3,3 V, conforme a
 Um conversor como o [TTL-232R-3V3](https://ftdichip.com/products/ttl-232r-3v3/)
 exemplifica o tipo de interface eletrica necessario.
 
-Este repositorio ainda nao inclui projeto/pinagem do Quartus. Adicione
-`Verilog/modules/uart/uart_metrics_sender.v` aos fontes, selecione `top` e
-atribua `pc_txd` ao GPIO fisicamente escolhido no Pin Planner, usando o
-padrao de I/O de 3,3 V apropriado. Confira tambem clock, reset, teclas e
-demais portas na montagem. O cabo USB-Blaster de programacao nao recebe
-automaticamente a UART implementada neste GPIO.
+O projeto para **DE0-CV** esta em [Quartus/SensoPiano_DE0_CV.qpf](Quartus/SensoPiano_DE0_CV.qpf),
+com fontes, dispositivo, clock e pinagem definidos no QSF. Consulte as
+[instrucoes de abertura e montagem](Quartus/README.md). A pinagem externa
+proposta precisa corresponder a sua fiacao. O cabo USB-Blaster de programacao
+nao recebe automaticamente a UART implementada neste GPIO.
 
 Abra a porta serial do adaptador no computador com a configuracao acima.
 Coloque `mode_sel=1` e acione `start`, com as teclas soltas. O terminal deve

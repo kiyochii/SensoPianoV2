@@ -16,8 +16,8 @@ em ESP32-C3/S2/S3, placas com PSRAM usando GPIO16/17 ou outra pinagem.
 | `pc_txd` (métricas ASCII) | GPIO17 — RX UART2 |
 | GND | GND |
 
-Use sinais TTL de **3,3 V**, nunca RS-232 ou 5 V. Configure os GPIOs físicos
-da FPGA no Quartus: o repositório ainda não inclui atribuições de pinos.
+Use sinais TTL de **3,3 V**, nunca RS-232 ou 5 V. O [projeto DE0-CV](../Quartus/README.md) atribui `esp_txd` ao GPIO_0 D24
+e `pc_txd` ao GPIO_0 D25; confira a montagem com essa pinagem.
 Os dois fios de TX da FPGA são sinais independentes: **não os una** no mesmo RX.
 É possível conectar apenas notas ou apenas métricas; o campo ausente permanece
 indisponível. `pc_txd` pode também alimentar o RX de um adaptador USB-UART.
