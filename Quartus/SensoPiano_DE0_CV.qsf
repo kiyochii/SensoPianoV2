@@ -170,3 +170,5 @@ set_location_assignment PIN_K17 -to {pc_txd}
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {pc_txd}
 set_location_assignment PIN_K19 -to {audio_pwm}
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {audio_pwm}
+set_location_assignment PIN_V13 -to {SW1}
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {SW1}

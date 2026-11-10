@@ -51,3 +51,30 @@ caminho interno continua restrito pelo clock de 20 ns.
 
 Referencia de dispositivo, polaridades e pinos:
 [Manual Terasic DE0-CV, tabelas 3-2 a 3-7](https://pages.hmc.edu/harris/class/e85/old/fall24/de0_manual.pdf).
+
+## Debug de bancada — SW1
+
+Ligue **SW1** para fixar **C4 (Do central, aproximadamente 261,63 Hz)**:
+
+- Audio continuo no GPIO_0 D26.
+- LED externo 0, LEDR0 e os tres canais RGB da nota 0 acesos juntos.
+- Um byte `0x40` na UART de notas (`esp_txd`, GPIO_0 D24) a cada entrada
+  no debug, em 115200 baud/8N1. Para reenviar, desligue e ligue SW1.
+- SW0, KEY1 e teclas do piano sao ignorados enquanto SW1 estiver ligada.
+- A UART de metricas fica em repouso; nao sao inventadas tentativas.
+
+KEY0 continua sendo reset. Desligar SW1 reinicia o nucleo no modo selecionado
+por SW0; no modo Aprender, pressione KEY1 para iniciar uma nova sessao.
+A troca de modo reinicia os transmissores e pode interromper um frame em curso.
+O debug utiliza divisor proprio para C4; o audio dos modos anteriores nao
+foi alterado. SW1 possui debounce de 10 ms.
+
+Teste do wrapper (a partir da raiz, com Icarus Verilog):
+
+```sh
+iverilog -g2012 -s tb_debug -o /tmp/sensopiano-debug.vvp \
+  Quartus/tb_debug.v Quartus/sensopiano_de0_cv.v \
+  Verilog/top.v Verilog/fd.v Verilog/uc.v Verilog/mode_controller.v \
+  Verilog/modules/utils/*.v Verilog/modules/uart/*.v
+vvp /tmp/sensopiano-debug.vvp
+```

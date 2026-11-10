@@ -82,3 +82,4 @@ A numeracao D do GPIO e o indice de sinal, nao o numero fisico no conector de 40
 | `esp_txd` | `L19` |
 | `pc_txd` | `K17` |
 | `audio_pwm` | `K19` |
+| `SW1` (debug C4) | `V13` |
