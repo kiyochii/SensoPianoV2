@@ -1,11 +1,31 @@
 # SensoPianoV2
 
+## LEDs do piano
+
+São **12 LEDs de uma única cor**, um por tecla. No modo Livre acendem
+conforme as teclas pressionadas; no modo Aprender indicam a próxima nota.
+As saídas `piano_leds_n` usam GPIO_0 D12–D23 e são ativas em nível baixo.
+A cor depende do LED instalado. Consulte a [pinagem](Quartus/PINAGEM.md).
+
 ## ESP32 e webapp
 
 O firmware agora recebe notas e métricas da FPGA por duas UARTs e serve um
 webapp local pelo Wi-Fi do ESP32. Consulte [ligação, compilação e uso](ESP32/README.md).
 
-## Primeira etapa: metricas da FPGA para o computador
+## Tempos e eventos físicos
+
+A FPGA agora envia timestamps de 1 ms, pressão/soltura das 12 teclas, modo,
+sessão e resultado das tentativas no fio `pc_txd` existente, junto às linhas
+`M` anteriores. O ESP32 calcula duração dos toques, intervalos e variação,
+tempo da primeira resposta, tempo até acertar, tempo ativo, uso por tecla,
+episódios com várias teclas e sequências de acertos. Não há novos componentes
+ou fios. É necessário atualizar o firmware das **duas placas**.
+
+No modo Aprender, a UART legada `esp_txd` envia notas guia; os toques físicos
+são identificados pelos novos frames `T`. Consulte o
+[protocolo e as definições das métricas](ESP32/README.md#tempos-e-outras-métricas-sem-novos-componentes).
+
+## Métricas da FPGA para o computador
 
 O `top` agora tem a saida `pc_txd` para transmitir as metricas do modo
 Aprender por UART. A saida `esp_txd` continua enviando os bytes de nota no
@@ -83,7 +103,9 @@ Livre, selecione Aprender e acione `start`; os contadores sao zerados.
 Uma linha em andamento termina antes do snapshot da nova sessao. O reset
 global interrompe a transmissao; apos um reset, o leitor deve descartar linhas
 incompletas ou fora do formato esperado e sincronizar na proxima linha `M,...`.
-Ainda nao ha timestamp, identificador de sessao ou comandos recebidos do PC.
+As linhas `M` não incluem timestamp ou sessão. Essas informações agora vêm
+nos frames `T` adicionais; não há comandos recebidos do PC. Leitores antigos
+devem ignorar as linhas `T` para continuar interpretando apenas `M`.
 
 ### Simulacao e limites da validacao
 
@@ -94,7 +116,7 @@ cd Verilog
 bash run_tests.sh
 ```
 
-O script executa 12 testbenches com verificacao automatica, cobrindo todos
+O script executa 13 testbenches com verificacao automatica, cobrindo todos
 os modulos: debounce, registrador, ROM, fluxo de dados, unidade de controle,
 modos, audio, emissores de notas/metricas e UART. Inclui todos os 4096
 vetores de teclas, os 256 bytes UART, periodos de audio, saturacao, reset e

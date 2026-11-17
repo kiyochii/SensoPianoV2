@@ -10,9 +10,6 @@ module mode_controller (
     input  wire        key_valid_pulse,
 
     output reg  [11:0] leds_out,
-    output reg  [11:0] rgb_r,
-    output reg  [11:0] rgb_g,
-    output reg  [11:0] rgb_b,
 
     output reg         send_note,
     output reg  [3:0]  note_out,
@@ -25,7 +22,8 @@ module mode_controller (
     output reg         wrong_pulse,
     output reg         done,
     output reg  [2:0]  state_dbg,
-    output wire        session_start_pulse
+    output wire        session_start_pulse,
+    output wire [6:0]  expected_note_out
 );
 
     localparam FREE_MODE   = 3'd0;
@@ -52,6 +50,7 @@ module mode_controller (
 
     assign expected_onehot   = (12'b000000000001 << expected_note);
     assign expected_key_down = keys_db[expected_note];
+    assign expected_note_out = expected_full;
     assign session_start_pulse = (state == LEARN_IDLE) && mode_sel && start;
     assign free_key_any      = |keys_db;
     assign free_key_valid    = free_key_any && ((keys_db & (keys_db - 12'd1)) == 12'd0);
@@ -214,9 +213,6 @@ module mode_controller (
     // ==========================================
     always @(*) begin
         leds_out      = 12'd0;
-        rgb_r         = 12'd0;
-        rgb_g         = 12'd0;
-        rgb_b         = 12'd0;
 
         send_note     = 1'b0;
         note_out      = 4'd0;
@@ -233,9 +229,6 @@ module mode_controller (
         case (state)
             FREE_MODE: begin
                 leds_out = keys_db;
-                rgb_r    = keys_db;
-                rgb_g    = keys_db;
-                rgb_b    = keys_db;
 
                 if (free_key_valid) begin
                     tone_enable = 1'b1;
@@ -261,12 +254,6 @@ module mode_controller (
                 tone_enable = 1'b1;
                 tone_note   = expected_note;
                 tone_octave = expected_octave;
-
-                case (expected_octave)
-                    3'd0, 3'd1, 3'd2: rgb_r = expected_onehot; // grave
-                    3'd3, 3'd4, 3'd5: rgb_g = expected_onehot; // medio
-                    default:           rgb_b = expected_onehot; // agudo
-                endcase
             end
 
             LEARN_WAIT: begin
@@ -274,12 +261,6 @@ module mode_controller (
                 tone_enable = 1'b1;
                 tone_note   = expected_note;
                 tone_octave = expected_octave;
-
-                case (expected_octave)
-                    3'd0, 3'd1, 3'd2: rgb_r = expected_onehot;
-                    3'd3, 3'd4, 3'd5: rgb_g = expected_onehot;
-                    default:           rgb_b = expected_onehot;
-                endcase
             end
 
             LEARN_CHECK: begin

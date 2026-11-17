@@ -7,9 +7,6 @@ module sensopiano_de0_cv (
     input wire [11:0] piano_keys,
     output wire [9:0] LEDR,
     output wire [11:0] piano_leds_n,
-    output wire [11:0] rgb_r_n,
-    output wire [11:0] rgb_g_n,
-    output wire [11:0] rgb_b_n,
     output wire esp_txd,
     output wire pc_txd,
     output wire audio_pwm
@@ -71,7 +68,6 @@ module sensopiano_de0_cv (
         .keys_raw(debug_on ? 12'h001 : filtered_keys),
         .mode_sel(debug_on ? 1'b0 : mode_sync[1]), .start(start & ~debug_on),
         .esp_txd(esp_txd), .pc_txd(pc_txd), .audio_pwm(core_audio),
-        .leds_out(piano_leds_n),
-        .rgb_r(rgb_r_n), .rgb_g(rgb_g_n), .rgb_b(rgb_b_n)
+        .leds_out(piano_leds_n)
     );
 endmodule
