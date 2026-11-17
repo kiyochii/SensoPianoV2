@@ -31,17 +31,10 @@ module top #(
     output wire        audio_pwm,
 
     // =========================================================
-    // serve para nada
+    // LEDs de uma única cor: tecla tocada ou nota guia
     // =========================================================
     output wire [11:0] leds_out,   // LEDs simples (tecla ativa)
     
-    // =========================================================
-    // RGB (depende se você realmente usar LED RGB)
-    // =========================================================
-    output wire [11:0] rgb_r,
-    output wire [11:0] rgb_g,
-    output wire [11:0] rgb_b,
-
     // =========================================================
     //  DEBUG
     // =========================================================
@@ -72,6 +65,7 @@ module top #(
 );
     wire load_key;
     wire session_start_pulse;
+    wire [6:0] expected_note;
 
     // uart_tx usa oito ciclos de prescale por bit. Arredonda ao mais proximo.
     localparam [15:0] UART_PRESCALE =
@@ -85,9 +79,6 @@ module top #(
     wire        metrics_tready;
 
     wire [11:0] mc_leds_out;
-    wire [11:0] mc_rgb_r;
-    wire [11:0] mc_rgb_g;
-    wire [11:0] mc_rgb_b;
     wire [2:0]  mc_octave_out;
     wire        mc_tone_enable;
     wire [3:0]  mc_tone_note;
@@ -141,9 +132,6 @@ module top #(
         .key_valid_pulse (key_valid_pulse),
 
         .leds_out        (mc_leds_out),
-        .rgb_r           (mc_rgb_r),
-        .rgb_g           (mc_rgb_g),
-        .rgb_b           (mc_rgb_b),
 
         .send_note       (mc_send_note),
         .note_out        (mc_note_out),
@@ -156,7 +144,8 @@ module top #(
         .wrong_pulse     (mc_wrong_pulse),
         .done            (mc_done),
         .state_dbg       (mc_state_dbg),
-        .session_start_pulse(session_start_pulse)
+        .session_start_pulse(session_start_pulse),
+        .expected_note_out(expected_note)
     );
 
     // =========================================================
@@ -165,13 +154,6 @@ module top #(
     // Saidas de LED na placa sao ativas em nivel baixo.
     assign leds_out     = ~mc_leds_out;
     assign leds_out_reg = ~keys_reg;
-
-    // =========================================================
-    // RGB vindos do mode_controller
-    // =========================================================
-    assign rgb_r = ~mc_rgb_r;
-    assign rgb_g = ~mc_rgb_g;
-    assign rgb_b = ~mc_rgb_b;
 
     // =========================================================
     // UART
@@ -213,12 +195,43 @@ module top #(
         .tx_tready    (metrics_tready)
     );
 
+    wire [7:0] activity_tdata;
+    wire activity_tvalid, activity_tready;
+    uart_activity_sender #(.CLK_FREQ_HZ(CLK_FREQ_HZ)) u_activity_sender (
+        .clk(clk), .rst(rst), .keys(keys_db), .mode_sel(mode_sel),
+        .state(mc_state_dbg), .expected_note(expected_note),
+        .session_start(session_start_pulse), .correct_pulse(mc_correct_pulse),
+        .wrong_pulse(mc_wrong_pulse), .tx_tdata(activity_tdata),
+        .tx_tvalid(activity_tvalid), .tx_tready(activity_tready)
+    );
+    // Arbitrate complete CRLF lines, alternating when both sources are ready.
+    // Holding the selection through the LF prevents interleaving M and T frames.
+    reg line_active, select_activity, prefer_activity;
+    wire [7:0] pc_tdata = select_activity ? activity_tdata : metrics_tdata;
+    wire pc_tvalid = line_active && (select_activity ? activity_tvalid : metrics_tvalid);
+    wire pc_tready;
+    assign metrics_tready = line_active && !select_activity && pc_tready;
+    assign activity_tready = line_active && select_activity && pc_tready;
+    always @(posedge clk) begin
+        if (rst) begin
+            line_active <= 0; select_activity <= 0; prefer_activity <= 0;
+        end else if (!line_active) begin
+            if (metrics_tvalid || activity_tvalid) begin
+                select_activity <= activity_tvalid && (!metrics_tvalid || prefer_activity);
+                line_active <= 1;
+            end
+        end else if (pc_tvalid && pc_tready && pc_tdata == 8'h0a) begin
+            line_active <= 0;
+            prefer_activity <= !select_activity;
+        end
+    end
+
     uart_tx #(.DATA_WIDTH(8)) u_pc_uart_tx (
         .clk          (clk),
         .rst          (rst),
-        .s_axis_tdata (metrics_tdata),
-        .s_axis_tvalid(metrics_tvalid),
-        .s_axis_tready(metrics_tready),
+        .s_axis_tdata (pc_tdata),
+        .s_axis_tvalid(pc_tvalid),
+        .s_axis_tready(pc_tready),
         .txd          (pc_txd),
         .busy         (pc_uart_busy),
         .prescale     (UART_PRESCALE)

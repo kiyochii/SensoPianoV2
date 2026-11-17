@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include "activity.h"
 
 namespace senso {
 struct Metrics {
@@ -12,7 +13,7 @@ struct Note {
     uint8_t raw = 0, pitch = 0, octave = 0;
     bool available = false;
 };
-enum class Kind : uint8_t { Note, Metrics, Raw };
+enum class Kind : uint8_t { Note, Metrics, Raw, Activity };
 struct Event {
     uint32_t id = 0, ms = 0;
     Kind kind = Kind::Raw;
@@ -20,6 +21,7 @@ struct Event {
     uint8_t raw[32] = {};
     Metrics metrics;
     Note note;
+    Activity activity;
 };
 // Caller synchronizes accesses when used from multiple FreeRTOS tasks.
 class Telemetry {
@@ -27,6 +29,8 @@ public:
     static constexpr size_t capacity = 128;
     Metrics metrics;
     Note note;
+    ActivityTracker activity;
+    uint32_t activityReceivedMs = 0;
     uint32_t sequence = 0, noteBytes = 0, metricsBytes = 0;
     uint32_t invalidNotes = 0, invalidLines = 0, uartErrors = 0;
 
@@ -69,7 +73,7 @@ public:
     }
 private:
     Event events_[capacity];
-    char line_[23] = {};
+    char line_[58] = {};
     size_t used_ = 0;
     bool discarding_ = false;
     void push(Event event) {
@@ -96,8 +100,36 @@ private:
         result.available = true;
         return true;
     }
+    bool hexField(size_t offset, size_t length, uint32_t& value) const {
+        value = 0;
+        for (size_t i = offset; i < offset + length; ++i) {
+            const char c = line_[i];
+            if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F'))) return false;
+            value = (value << 4) | (c <= '9' ? c - '0' : c - 'A' + 10);
+        }
+        return true;
+    }
+    bool decodeActivity(Activity& result) const {
+        if (used_ != 58 || line_[0] != 'T' || line_[2] != '1' ||
+            line_[56] != '\r' || line_[57] != '\n') return false;
+        const size_t commas[] = {1,3,12,21,30,34,36,38,41,44,53};
+        for (size_t offset : commas) if (line_[offset] != ',') return false;
+        uint32_t values[10];
+        const size_t offsets[] = {4,13,22,31,35,37,39,42,45,54};
+        const size_t lengths[] = {8,8,8,3,1,1,2,2,8,2};
+        for (size_t i = 0; i < 10; ++i) if (!hexField(offsets[i], lengths[i], values[i])) return false;
+        uint8_t checksum = 0;
+        for (size_t i = 0; i < 54; ++i) checksum ^= static_cast<uint8_t>(line_[i]);
+        if (checksum != values[9] || values[4] > 1 || values[5] > 5 ||
+            values[6] > 0x7b || (values[6] & 15) > 11 || values[7] > 31 ||
+            (values[7] & 6) == 6) return false;
+        result.sequence = values[0]; result.fpgaMs = values[1]; result.session = values[2];
+        result.keys = values[3]; result.mode = values[4]; result.state = values[5];
+        result.expected = values[6]; result.flags = values[7]; result.dropped = values[8];
+        return true;
+    }
     void parse(uint8_t byte, uint32_t ms) {
-        if (byte == 'M') {
+        if (byte == 'M' || byte == 'T') {
             if (used_ || discarding_) ++invalidLines;
             used_ = 0;
             discarding_ = false;
@@ -106,6 +138,7 @@ private:
         else discarding_ = true;
         if (byte != '\n') return;
         Metrics decoded;
+        Activity observed;
         if (!discarding_ && decode(decoded)) {
             metrics = decoded;
             Event event;
@@ -114,6 +147,21 @@ private:
             event.ms = ms;
             event.metrics = metrics;
             push(event);
+        } else if (!discarding_ && decodeActivity(observed)) {
+            const uint32_t oldEpoch = activity.latest.epoch;
+            if (activity.receive(observed)) {
+                activityReceivedMs = ms;
+                if (oldEpoch && oldEpoch != activity.latest.epoch) {
+                    metrics = Metrics{};
+                    note = Note{};
+                }
+                Event event;
+                event.kind = Kind::Activity;
+                event.source = 1;
+                event.ms = ms;
+                event.activity = activity.latest;
+                push(event);
+            }
         } else ++invalidLines;
         used_ = 0;
         discarding_ = false;

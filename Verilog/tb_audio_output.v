@@ -6,15 +6,14 @@ module tb_audio_output;
     reg rst = 1, mode_sel = 0, start = 0;
     reg [11:0] keys_raw = 0;
     wire audio_pwm, mc_done;
-    wire [11:0] leds_out, leds_out_reg, rgb_r, rgb_g, rgb_b;
+    wire [11:0] leds_out, leds_out_reg;
     integer half_periods [0:11];
     reg [6:0] song [0:5];
     integer i, half_cycles;
     time edge_time;
     top dut (.clk(clk), .rst(rst), .keys_raw(keys_raw), .mode_sel(mode_sel),
         .start(start), .audio_pwm(audio_pwm), .mc_done(mc_done),
-        .leds_out(leds_out), .leds_out_reg(leds_out_reg),
-        .rgb_r(rgb_r), .rgb_g(rgb_g), .rgb_b(rgb_b));
+        .leds_out(leds_out), .leds_out_reg(leds_out_reg));
 
     task check_period;
         input integer expected_cycles;
@@ -50,8 +49,7 @@ module tb_audio_output;
         for (i=0; i<12; i=i+1) begin
             @(negedge clk); keys_raw = 12'b1 << i;
             repeat (10) @(negedge clk);
-            if (leds_out !== ~keys_raw || leds_out_reg !== ~keys_raw ||
-                rgb_r !== ~keys_raw || rgb_g !== ~keys_raw || rgb_b !== ~keys_raw)
+            if (leds_out !== ~keys_raw || leds_out_reg !== ~keys_raw)
                 $fatal(1, "Polaridade ativa baixa da tecla %0d", i);
             check_period(half_periods[i]);
             @(negedge clk); keys_raw = 0;

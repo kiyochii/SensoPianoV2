@@ -37,9 +37,6 @@ module tb_top;
     wire        mc_done;
     wire [2:0]  mc_state_dbg;
 
-    wire [11:0] rgb_r;
-    wire [11:0] rgb_g;
-    wire [11:0] rgb_b;
 
     integer     pwm_edge_count;
     integer     edge_snapshot;
@@ -75,11 +72,8 @@ module tb_top;
         .mc_correct_pulse (mc_correct_pulse),
         .mc_wrong_pulse   (mc_wrong_pulse),
         .mc_done          (mc_done),
-        .mc_state_dbg     (mc_state_dbg),
+        .mc_state_dbg     (mc_state_dbg)
 
-        .rgb_r            (rgb_r),
-        .rgb_g            (rgb_g),
-        .rgb_b            (rgb_b)
     );
 
     // =========================================================

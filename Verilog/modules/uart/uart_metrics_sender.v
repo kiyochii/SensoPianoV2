@@ -17,6 +17,26 @@ module uart_metrics_sender (
     reg        snapshot_done;
     reg        pending, active;
     reg [4:0]  byte_index;
+    reg converting;
+    reg [3:0] conversion_bit;
+    reg [19:0] bcd_correct, bcd_wrong, bcd_attempts;
+
+    // Shift/add-3 converts one binary bit per clock. This replaces the long
+    // combinational division/modulo chain that failed timing at 50 MHz.
+    // Three counters convert in parallel; the complete line remains frozen.
+    function [19:0] bcd_step;
+        input [19:0] value;
+        input next_bit;
+        reg [19:0] adjusted;
+        integer digit;
+        begin
+            adjusted = value;
+            for (digit = 0; digit < 5; digit = digit + 1)
+                if (value[digit*4 +: 4] >= 4'd5)
+                    adjusted[digit*4 +: 4] = value[digit*4 +: 4] + 4'd3;
+            bcd_step = {adjusted[18:0], next_bit};
+        end
+    endfunction
 
     wire count_attempt = (correct_pulse || wrong_pulse) &&
                          (attempt_count != 16'hffff);
@@ -65,19 +85,36 @@ module uart_metrics_sender (
             snapshot_wrong    <= 16'd0;
             snapshot_attempts <= 16'd0;
             snapshot_done     <= 1'b0;
+            converting        <= 1'b0;
+            conversion_bit    <= 4'd0;
+            bcd_correct       <= 20'd0;
+            bcd_wrong         <= 20'd0;
+            bcd_attempts      <= 20'd0;
         end else begin
             if (metrics_changed)
                 pending <= 1'b1;
 
-            if (!active && pending) begin
+            if (!active && !converting && pending) begin
                 snapshot_correct  <= correct_count;
                 snapshot_wrong    <= wrong_count;
                 snapshot_attempts <= attempt_count;
                 snapshot_done     <= done_latched;
                 byte_index        <= 5'd0;
-                active            <= 1'b1;
+                converting        <= 1'b1;
+                conversion_bit    <= 4'd15;
+                bcd_correct       <= 20'd0;
+                bcd_wrong         <= 20'd0;
+                bcd_attempts      <= 20'd0;
                 // Um evento neste clock altera os contadores apos a captura.
                 pending           <= metrics_changed;
+            end else if (converting) begin
+                bcd_correct  <= bcd_step(bcd_correct, snapshot_correct[conversion_bit]);
+                bcd_wrong    <= bcd_step(bcd_wrong, snapshot_wrong[conversion_bit]);
+                bcd_attempts <= bcd_step(bcd_attempts, snapshot_attempts[conversion_bit]);
+                if (conversion_bit == 0) begin
+                    converting <= 1'b0;
+                    active <= 1'b1;
+                end else conversion_bit <= conversion_bit - 1'b1;
             end else if (active && tx_tready) begin
                 if (byte_index == 5'd22)
                     active <= 1'b0;
@@ -88,18 +125,16 @@ module uart_metrics_sender (
     end
 
     function [7:0] decimal_digit;
-        input [15:0] value;
+        input [19:0] value;
         input [2:0] position;
-        reg [15:0] quotient;
         begin
             case (position)
-                3'd0: quotient = value / 16'd10000;
-                3'd1: quotient = value / 16'd1000;
-                3'd2: quotient = value / 16'd100;
-                3'd3: quotient = value / 16'd10;
-                default: quotient = value;
+                3'd0: decimal_digit = 8'h30 + {4'd0, value[19:16]};
+                3'd1: decimal_digit = 8'h30 + {4'd0, value[15:12]};
+                3'd2: decimal_digit = 8'h30 + {4'd0, value[11:8]};
+                3'd3: decimal_digit = 8'h30 + {4'd0, value[7:4]};
+                default: decimal_digit = 8'h30 + {4'd0, value[3:0]};
             endcase
-            decimal_digit = 8'h30 + (quotient % 16'd10);
         end
     endfunction
 
@@ -110,21 +145,21 @@ module uart_metrics_sender (
         case (byte_index)
             5'd0: tx_tdata = "M";
             5'd1, 5'd7, 5'd13, 5'd19: tx_tdata = ",";
-            5'd2: tx_tdata = decimal_digit(snapshot_correct, 3'd0);
-            5'd3: tx_tdata = decimal_digit(snapshot_correct, 3'd1);
-            5'd4: tx_tdata = decimal_digit(snapshot_correct, 3'd2);
-            5'd5: tx_tdata = decimal_digit(snapshot_correct, 3'd3);
-            5'd6: tx_tdata = decimal_digit(snapshot_correct, 3'd4);
-            5'd8: tx_tdata = decimal_digit(snapshot_wrong, 3'd0);
-            5'd9: tx_tdata = decimal_digit(snapshot_wrong, 3'd1);
-            5'd10: tx_tdata = decimal_digit(snapshot_wrong, 3'd2);
-            5'd11: tx_tdata = decimal_digit(snapshot_wrong, 3'd3);
-            5'd12: tx_tdata = decimal_digit(snapshot_wrong, 3'd4);
-            5'd14: tx_tdata = decimal_digit(snapshot_attempts, 3'd0);
-            5'd15: tx_tdata = decimal_digit(snapshot_attempts, 3'd1);
-            5'd16: tx_tdata = decimal_digit(snapshot_attempts, 3'd2);
-            5'd17: tx_tdata = decimal_digit(snapshot_attempts, 3'd3);
-            5'd18: tx_tdata = decimal_digit(snapshot_attempts, 3'd4);
+            5'd2: tx_tdata = decimal_digit(bcd_correct, 3'd0);
+            5'd3: tx_tdata = decimal_digit(bcd_correct, 3'd1);
+            5'd4: tx_tdata = decimal_digit(bcd_correct, 3'd2);
+            5'd5: tx_tdata = decimal_digit(bcd_correct, 3'd3);
+            5'd6: tx_tdata = decimal_digit(bcd_correct, 3'd4);
+            5'd8: tx_tdata = decimal_digit(bcd_wrong, 3'd0);
+            5'd9: tx_tdata = decimal_digit(bcd_wrong, 3'd1);
+            5'd10: tx_tdata = decimal_digit(bcd_wrong, 3'd2);
+            5'd11: tx_tdata = decimal_digit(bcd_wrong, 3'd3);
+            5'd12: tx_tdata = decimal_digit(bcd_wrong, 3'd4);
+            5'd14: tx_tdata = decimal_digit(bcd_attempts, 3'd0);
+            5'd15: tx_tdata = decimal_digit(bcd_attempts, 3'd1);
+            5'd16: tx_tdata = decimal_digit(bcd_attempts, 3'd2);
+            5'd17: tx_tdata = decimal_digit(bcd_attempts, 3'd3);
+            5'd18: tx_tdata = decimal_digit(bcd_attempts, 3'd4);
             5'd20: tx_tdata = snapshot_done ? "1" : "0";
             5'd21: tx_tdata = 8'h0d;
             5'd22: tx_tdata = 8'h0a;

@@ -1,0 +1,329 @@
+Info: *******************************************************************
+Info: Running Quartus Prime Shell
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Copyright (C) 2020  Intel Corporation. All rights reserved.
+    Info: Your use of Intel Corporation's design tools, logic functions 
+    Info: and other software and tools, and any partner logic 
+    Info: functions, and any output files from any of the foregoing 
+    Info: (including device programming or simulation files), and any 
+    Info: associated documentation or information are expressly subject 
+    Info: to the terms and conditions of the Intel Program License 
+    Info: Subscription Agreement, the Intel Quartus Prime License Agreement,
+    Info: the Intel FPGA IP License Agreement, or other applicable license
+    Info: agreement, including, without limitation, that your use is for
+    Info: the sole purpose of programming logic devices manufactured by
+    Info: Intel and sold by Intel or its authorized distributors.  Please
+    Info: refer to the applicable agreement for further details, at
+    Info: https://fpgasoftware.intel.com/eula.
+    Info: Processing started: Tue Nov 17 13:35:09 2026
+Info: Command: quartus_sh --restore C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/SensoPiano_DE0_CV.qar
+Info: Quartus(args): -unqar C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/SensoPiano_DE0_CV.qar
+Info: qar.tcl version #1
+Info: Restored Quartus Project File: Quartus/SensoPiano_DE0_CV.qpf
+Info: Successfully restored 'C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/SensoPiano_DE0_CV.qar'
+Info: Generated report 'SensoPiano_DE0_CV.restore.rpt'
+Info (23030): Evaluation of Tcl script c:/intelfpga_lite/20.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 0 warnings
+    Info: Peak virtual memory: 4823 megabytes
+    Info: Processing ended: Tue Nov 17 13:35:10 2026
+    Info: Elapsed time: 00:00:01
+    Info: Total CPU time (on all processors): 00:00:01
+Info: *******************************************************************
+Info: Running Quartus Prime Shell
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Copyright (C) 2020  Intel Corporation. All rights reserved.
+    Info: Your use of Intel Corporation's design tools, logic functions 
+    Info: and other software and tools, and any partner logic 
+    Info: functions, and any output files from any of the foregoing 
+    Info: (including device programming or simulation files), and any 
+    Info: associated documentation or information are expressly subject 
+    Info: to the terms and conditions of the Intel Program License 
+    Info: Subscription Agreement, the Intel Quartus Prime License Agreement,
+    Info: the Intel FPGA IP License Agreement, or other applicable license
+    Info: agreement, including, without limitation, that your use is for
+    Info: the sole purpose of programming logic devices manufactured by
+    Info: Intel and sold by Intel or its authorized distributors.  Please
+    Info: refer to the applicable agreement for further details, at
+    Info: https://fpgasoftware.intel.com/eula.
+    Info: Processing started: Tue Nov 17 13:35:07 2026
+Info: Command: quartus_sh --archive -no_discover -self_test -output SensoPiano_DE0_CV.qar SensoPiano_DE0_CV
+Info: Quartus(args): -qar -no_discover -self_test -output SensoPiano_DE0_CV.qar SensoPiano_DE0_CV
+Info: qar.tcl version #1
+Info: Including '-use_file_set basic' by default
+Info: File Set 'Source control' contains:
+    Info: Project source and settings files
+    Info: Automatically detected source files
+Warning: Hierarchical Platform Designer systems and custom IP components(_hw.tcl and associated files) are not archived by the Quartus Archiver
+Warning: Excluding 'Automatically detected source files' The Quartus Prime software may not be able to automatically locate all project files.
+Info: Archive will store files relative to the closest common parent directory
+Info (13213): Using common directory C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/
+Info: ----------------------------------------------------------
+Info: ----------------------------------------------------------
+Info: Generated archive 'SensoPiano_DE0_CV.qar'
+Info: ----------------------------------------------------------
+Info: ----------------------------------------------------------
+Info: Generated report 'SensoPiano_DE0_CV.archive.rpt'
+Info: Successfully restored C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/SensoPiano_DE0_CV.qar
+Info: Compiling: __self_test_tmp_dir/SensoPiano_DE0_CV/0
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Processing started: Tue Nov 17 13:35:10 2026
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off SensoPiano_DE0_CV -c SensoPiano_DE0_CV
+Info (20032): Parallel compilation is enabled and will use up to 4 processors
+Info (12021): Found 1 design units, including 1 entities, in source file sensopiano_de0_cv.v
+    Info (12023): Found entity 1: sensopiano_de0_cv File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/sensopiano_de0_cv.v Line: 2
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/top.v
+    Info (12023): Found entity 1: top File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/fd.v
+    Info (12023): Found entity 1: fluxo_dados File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/fd.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/uc.v
+    Info (12023): Found entity 1: UC File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/uc.v Line: 8
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/mode_controller.v
+    Info (12023): Found entity 1: mode_controller File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/mode_controller.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/utils/debounce.v
+    Info (12023): Found entity 1: debouncer File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/utils/debounce.v Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/utils/key_register.v
+    Info (12023): Found entity 1: key_register File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/utils/key_register.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/utils/music_rom.v
+    Info (12023): Found entity 1: music_rom File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/utils/music_rom.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/uart/uart_tx.v
+    Info (12023): Found entity 1: uart_tx File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 32
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/uart/uart_key_sender.v
+    Info (12023): Found entity 1: uart_key_sender File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_key_sender.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/uart/uart_metrics_sender.v
+    Info (12023): Found entity 1: uart_metrics_sender File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_metrics_sender.v Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file /users/henri/appdata/local/temp/sensopiano_final_fhl6ksw0/verilog/modules/uart/uart_activity_sender.v
+    Info (12023): Found entity 1: uart_activity_sender File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_activity_sender.v Line: 4
+Info (12127): Elaborating entity "sensopiano_de0_cv" for the top level hierarchy
+Info (12128): Elaborating entity "debouncer" for hierarchy "debouncer:debug_filter" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/sensopiano_de0_cv.v Line: 29
+Warning (10230): Verilog HDL assignment warning at debounce.v(40): truncated value with size 32 to match size of target (19) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/utils/debounce.v Line: 40
+Info (12128): Elaborating entity "top" for hierarchy "top:core" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/sensopiano_de0_cv.v Line: 72
+Warning (10230): Verilog HDL assignment warning at top.v(72): truncated value with size 32 to match size of target (16) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 72
+Info (12128): Elaborating entity "fluxo_dados" for hierarchy "top:core|fluxo_dados:u_fluxo_dados" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 106
+Info (12128): Elaborating entity "debouncer" for hierarchy "top:core|fluxo_dados:u_fluxo_dados|debouncer:u_db_0" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/fd.v Line: 15
+Warning (10230): Verilog HDL assignment warning at debounce.v(40): truncated value with size 32 to match size of target (2) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/utils/debounce.v Line: 40
+Info (12128): Elaborating entity "key_register" for hierarchy "top:core|fluxo_dados:u_fluxo_dados|key_register:u_key_register" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/fd.v Line: 38
+Info (12128): Elaborating entity "UC" for hierarchy "top:core|UC:u_uc" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 120
+Warning (10270): Verilog HDL Case Statement warning at uc.v(76): incomplete case statement has no default case item File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/uc.v Line: 76
+Info (12128): Elaborating entity "mode_controller" for hierarchy "top:core|mode_controller:u_mode_controller" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 149
+Warning (10270): Verilog HDL Case Statement warning at mode_controller.v(229): incomplete case statement has no default case item File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/mode_controller.v Line: 229
+Info (10264): Verilog HDL Case Statement information at mode_controller.v(229): all case item expressions in this case statement are onehot File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/mode_controller.v Line: 229
+Info (12128): Elaborating entity "uart_key_sender" for hierarchy "top:core|uart_key_sender:u_uart_key_sender" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 170
+Info (12128): Elaborating entity "uart_tx" for hierarchy "top:core|uart_tx:u_uart_tx" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 183
+Warning (10230): Verilog HDL assignment warning at uart_tx.v(88): truncated value with size 32 to match size of target (19) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 88
+Warning (10230): Verilog HDL assignment warning at uart_tx.v(95): truncated value with size 32 to match size of target (19) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 95
+Warning (10230): Verilog HDL assignment warning at uart_tx.v(96): truncated value with size 32 to match size of target (4) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 96
+Warning (10230): Verilog HDL assignment warning at uart_tx.v(103): truncated value with size 32 to match size of target (4) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 103
+Warning (10230): Verilog HDL assignment warning at uart_tx.v(104): truncated value with size 32 to match size of target (19) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 104
+Warning (10230): Verilog HDL assignment warning at uart_tx.v(107): truncated value with size 32 to match size of target (4) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_tx.v Line: 107
+Info (12128): Elaborating entity "uart_metrics_sender" for hierarchy "top:core|uart_metrics_sender:u_uart_metrics_sender" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 196
+Warning (10270): Verilog HDL Case Statement warning at uart_metrics_sender.v(145): incomplete case statement has no default case item File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_metrics_sender.v Line: 145
+Info (12128): Elaborating entity "uart_activity_sender" for hierarchy "top:core|uart_activity_sender:u_activity_sender" File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/top.v Line: 206
+Warning (10230): Verilog HDL assignment warning at uart_activity_sender.v(59): truncated value with size 32 to match size of target (10) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_activity_sender.v Line: 59
+Warning (10230): Verilog HDL assignment warning at uart_activity_sender.v(72): truncated value with size 32 to match size of target (4) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_activity_sender.v Line: 72
+Info (10264): Verilog HDL Case Statement information at uart_activity_sender.v(74): all case item expressions in this case statement are onehot File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_activity_sender.v Line: 74
+Warning (10230): Verilog HDL assignment warning at uart_activity_sender.v(81): truncated value with size 32 to match size of target (4) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_activity_sender.v Line: 81
+Warning (10230): Verilog HDL assignment warning at uart_activity_sender.v(45): truncated value with size 32 to match size of target (8) File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Verilog/modules/uart/uart_activity_sender.v Line: 45
+Warning (276020): Inferred RAM node "top:core|uart_activity_sender:u_activity_sender|fifo_rtl_0" from synchronous design logic.  Pass-through logic has been added to match the read-during-write behavior of the original design.
+Info (19000): Inferred 1 megafunctions from design logic
+    Info (276029): Inferred altsyncram megafunction from the following design logic: "top:core|uart_activity_sender:u_activity_sender|fifo_rtl_0" 
+        Info (286033): Parameter OPERATION_MODE set to DUAL_PORT
+        Info (286033): Parameter WIDTH_A set to 155
+        Info (286033): Parameter WIDTHAD_A set to 4
+        Info (286033): Parameter NUMWORDS_A set to 16
+        Info (286033): Parameter WIDTH_B set to 155
+        Info (286033): Parameter WIDTHAD_B set to 4
+        Info (286033): Parameter NUMWORDS_B set to 16
+        Info (286033): Parameter ADDRESS_ACLR_A set to NONE
+        Info (286033): Parameter OUTDATA_REG_B set to UNREGISTERED
+        Info (286033): Parameter ADDRESS_ACLR_B set to NONE
+        Info (286033): Parameter OUTDATA_ACLR_B set to NONE
+        Info (286033): Parameter ADDRESS_REG_B set to CLOCK0
+        Info (286033): Parameter INDATA_ACLR_A set to NONE
+        Info (286033): Parameter WRCONTROL_ACLR_A set to NONE
+        Info (286033): Parameter READ_DURING_WRITE_MODE_MIXED_PORTS set to OLD_DATA
+Info (12130): Elaborated megafunction instantiation "top:core|uart_activity_sender:u_activity_sender|altsyncram:fifo_rtl_0"
+Info (12133): Instantiated megafunction "top:core|uart_activity_sender:u_activity_sender|altsyncram:fifo_rtl_0" with the following parameter:
+    Info (12134): Parameter "OPERATION_MODE" = "DUAL_PORT"
+    Info (12134): Parameter "WIDTH_A" = "155"
+    Info (12134): Parameter "WIDTHAD_A" = "4"
+    Info (12134): Parameter "NUMWORDS_A" = "16"
+    Info (12134): Parameter "WIDTH_B" = "155"
+    Info (12134): Parameter "WIDTHAD_B" = "4"
+    Info (12134): Parameter "NUMWORDS_B" = "16"
+    Info (12134): Parameter "ADDRESS_ACLR_A" = "NONE"
+    Info (12134): Parameter "OUTDATA_REG_B" = "UNREGISTERED"
+    Info (12134): Parameter "ADDRESS_ACLR_B" = "NONE"
+    Info (12134): Parameter "OUTDATA_ACLR_B" = "NONE"
+    Info (12134): Parameter "ADDRESS_REG_B" = "CLOCK0"
+    Info (12134): Parameter "INDATA_ACLR_A" = "NONE"
+    Info (12134): Parameter "WRCONTROL_ACLR_A" = "NONE"
+    Info (12134): Parameter "READ_DURING_WRITE_MODE_MIXED_PORTS" = "OLD_DATA"
+Info (12021): Found 1 design units, including 1 entities, in source file db/altsyncram_c6n1.tdf
+    Info (12023): Found entity 1: altsyncram_c6n1 File: C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/Quartus/db/altsyncram_c6n1.tdf Line: 28
+Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
+Info (286030): Timing-Driven Synthesis is running
+Info (17049): 28 registers lost all their fanouts during netlist optimizations.
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Info (21057): Implemented 2349 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 17 input pins
+    Info (21059): Implemented 25 output pins
+    Info (21061): Implemented 2152 logic cells
+    Info (21064): Implemented 155 RAM segments
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 18 warnings
+    Info: Peak virtual memory: 4858 megabytes
+    Info: Processing ended: Tue Nov 17 13:35:26 2026
+    Info: Elapsed time: 00:00:16
+    Info: Total CPU time (on all processors): 00:00:26
+Info: *******************************************************************
+Info: Running Quartus Prime Timing Analyzer
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Processing started: Tue Nov 17 13:35:27 2026
+Info: Command: quartus_sta SensoPiano_DE0_CV -c SensoPiano_DE0_CV --post_map
+Info: qsta_default_script.tcl version: #1
+Info: Using post quartus_map netlist
+Info (119006): Selected device 5CEBA4F23C7 for design "SensoPiano_DE0_CV"
+Info (20032): Parallel compilation is enabled and will use up to 4 processors
+Info (21076): High junction temperature operating condition is not set. Assuming a default value of '85'.
+Info (21076): Low junction temperature operating condition is not set. Assuming a default value of '0'.
+Info (332104): Reading SDC File: 'SensoPiano_DE0_CV.sdc'
+Info (332151): Clock uncertainty is not calculated until you update the timing netlist.
+Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
+Info: Found TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS = ON
+Info: Analyzing Slow 1100mV 85C Model
+Info (332146): Worst-case setup slack is 1.880
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     1.880               0.000 CLOCK_50 
+Critical Warning (332148): Timing requirements not met
+    Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
+Info (332146): Worst-case hold slack is -0.039
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):    -0.039              -1.575 CLOCK_50 
+Info (332146): Worst-case recovery slack is 8.515
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     8.515               0.000 CLOCK_50 
+Info (332146): Worst-case removal slack is 5.237
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     5.237               0.000 CLOCK_50 
+Info (332146): Worst-case minimum pulse width slack is 8.820
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     8.820               0.000 CLOCK_50 
+Warning (18869): Performing metastability analysis with a pre-fit timing netlist. MTBF values for unplaced blocks are not available, and any reported MTBF values should be treated as an estimate.
+Info (332114): Report Metastability: Found 15 synchronizer chains.
+    Info (332114): The design MTBF is not calculated because there are no specified synchronizers in the design.
+    Info (332114): Number of Synchronizer Chains Found: 15
+    Info (332114): Shortest Synchronizer Chain: 2 Registers
+    Info (332114): Fraction of Chains for which MTBFs Could Not be Calculated: 1.000
+    Info (332114): Worst Case Available Settling Time: 21.207 ns
+Info: Analyzing Slow 1100mV 0C Model
+Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
+Info (332146): Worst-case setup slack is 1.609
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     1.609               0.000 CLOCK_50 
+Critical Warning (332148): Timing requirements not met
+    Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
+Info (332146): Worst-case hold slack is -0.097
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):    -0.097              -5.345 CLOCK_50 
+Info (332146): Worst-case recovery slack is 8.477
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     8.477               0.000 CLOCK_50 
+Info (332146): Worst-case removal slack is 5.260
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     5.260               0.000 CLOCK_50 
+Info (332146): Worst-case minimum pulse width slack is 8.843
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     8.843               0.000 CLOCK_50 
+Warning (18869): Performing metastability analysis with a pre-fit timing netlist. MTBF values for unplaced blocks are not available, and any reported MTBF values should be treated as an estimate.
+Info (332114): Report Metastability: Found 15 synchronizer chains.
+    Info (332114): The design MTBF is not calculated because there are no specified synchronizers in the design.
+    Info (332114): Number of Synchronizer Chains Found: 15
+    Info (332114): Shortest Synchronizer Chain: 2 Registers
+    Info (332114): Fraction of Chains for which MTBFs Could Not be Calculated: 1.000
+    Info (332114): Worst Case Available Settling Time: 20.932 ns
+Info: Analyzing Fast 1100mV 85C Model
+Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
+Info (332146): Worst-case setup slack is 3.426
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     3.426               0.000 CLOCK_50 
+Info (332146): Worst-case hold slack is 0.062
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     0.062               0.000 CLOCK_50 
+Info (332146): Worst-case recovery slack is 9.383
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     9.383               0.000 CLOCK_50 
+Info (332146): Worst-case removal slack is 5.127
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     5.127               0.000 CLOCK_50 
+Info (332146): Worst-case minimum pulse width slack is 8.689
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     8.689               0.000 CLOCK_50 
+Warning (18869): Performing metastability analysis with a pre-fit timing netlist. MTBF values for unplaced blocks are not available, and any reported MTBF values should be treated as an estimate.
+Info (332114): Report Metastability: Found 15 synchronizer chains.
+    Info (332114): The design MTBF is not calculated because there are no specified synchronizers in the design.
+    Info (332114): Number of Synchronizer Chains Found: 15
+    Info (332114): Shortest Synchronizer Chain: 2 Registers
+    Info (332114): Fraction of Chains for which MTBFs Could Not be Calculated: 1.000
+    Info (332114): Worst Case Available Settling Time: 23.009 ns
+Info: Analyzing Fast 1100mV 0C Model
+Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
+Info (332146): Worst-case setup slack is 3.434
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     3.434               0.000 CLOCK_50 
+Info (332146): Worst-case hold slack is 0.037
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     0.037               0.000 CLOCK_50 
+Info (332146): Worst-case recovery slack is 9.415
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     9.415               0.000 CLOCK_50 
+Info (332146): Worst-case removal slack is 5.117
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     5.117               0.000 CLOCK_50 
+Info (332146): Worst-case minimum pulse width slack is 8.677
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     8.677               0.000 CLOCK_50 
+Warning (18869): Performing metastability analysis with a pre-fit timing netlist. MTBF values for unplaced blocks are not available, and any reported MTBF values should be treated as an estimate.
+Info (332114): Report Metastability: Found 15 synchronizer chains.
+    Info (332114): The design MTBF is not calculated because there are no specified synchronizers in the design.
+    Info (332114): Number of Synchronizer Chains Found: 15
+    Info (332114): Shortest Synchronizer Chain: 2 Registers
+    Info (332114): Fraction of Chains for which MTBFs Could Not be Calculated: 1.000
+    Info (332114): Worst Case Available Settling Time: 23.024 ns
+Info (332101): Design is fully constrained for setup requirements
+Info (332101): Design is fully constrained for hold requirements
+Info: Quartus Prime Timing Analyzer was successful. 0 errors, 6 warnings
+    Info: Peak virtual memory: 5061 megabytes
+    Info: Processing ended: Tue Nov 17 13:35:31 2026
+    Info: Elapsed time: 00:00:04
+    Info: Total CPU time (on all processors): 00:00:05
+* ---------------- Test result (pass) ---------------- *
+Info: 'SensoPiano_DE0_CV.qar' passed the compile test and is ready to go
+* ---------------------------------------------------- *
+Info (23030): Evaluation of Tcl script c:/intelfpga_lite/20.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 26 warnings
+    Info: Peak virtual memory: 4830 megabytes
+    Info: Processing ended: Tue Nov 17 13:35:32 2026
+    Info: Elapsed time: 00:00:25
+    Info: Total CPU time (on all processors): 00:00:06

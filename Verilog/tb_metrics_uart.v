@@ -12,7 +12,11 @@ module metrics_uart_monitor #(
     output integer attempt_count = -1,
     output reg completed = 0
 );
-    reg [7:0] bytes [0:22];
+    reg [7:0] bytes [0:57];
+    integer activity_frames = 0;
+    reg [7:0] checksum;
+    integer j;
+    integer last_keys = 0;
     reg [7:0] received;
     integer index = 0;
     integer bit_index;
@@ -32,10 +36,25 @@ module metrics_uart_monitor #(
         end
     endfunction
 
+    function integer hex_field;
+        input integer offset, length;
+        integer k, digit;
+        begin
+            hex_field = 0;
+            for (k = 0; k < length; k = k + 1) begin
+                if (bytes[offset+k] >= "0" && bytes[offset+k] <= "9") digit = bytes[offset+k] - "0";
+                else if (bytes[offset+k] >= "A" && bytes[offset+k] <= "F") digit = bytes[offset+k] - "A" + 10;
+                else $fatal(1, "Hex invalido");
+                hex_field = (hex_field << 4) | digit;
+            end
+        end
+    endfunction
+
     always @(posedge rst) begin
         epoch = epoch + 1;
         index = 0;
         frames = 0;
+        activity_frames = 0;
         correct_count = -1;
         wrong_count = -1;
         attempt_count = -1;
@@ -44,7 +63,8 @@ module metrics_uart_monitor #(
 
     always begin
         @(negedge txd);
-        if (!rst) begin
+        if (!rst) fork : decode_byte
+          begin
             byte_epoch = epoch;
             #(BIT_NS / 2);
             if (!rst && byte_epoch == epoch && txd !== 1'b0)
@@ -60,7 +80,22 @@ module metrics_uart_monitor #(
                 if (^received === 1'bx)
                     $fatal(1, "Byte UART indefinido");
                 bytes[index] = received;
-                if (index == 22) begin
+                if (index == 0 && received != "M" && received != "T")
+                    $fatal(1, "Linha intercalada ou inicio invalido");
+                if (bytes[0] == "T" && index == 57) begin
+                    if (bytes[1] != "," || bytes[2] != "1" || bytes[3] != "," ||
+                        bytes[12] != "," || bytes[21] != "," || bytes[30] != "," ||
+                        bytes[34] != "," || bytes[36] != "," || bytes[38] != "," ||
+                        bytes[41] != "," || bytes[44] != "," || bytes[53] != "," ||
+                        bytes[56] != 13 || bytes[57] != 10)
+                        $fatal(1, "Formato T invalido no fio");
+                    checksum = 0;
+                    for (j = 0; j < 54; j = j + 1) checksum = checksum ^ bytes[j];
+                    if (hex_field(54, 2) != checksum) $fatal(1, "Checksum T no fio");
+                    last_keys = hex_field(31, 3);
+                    activity_frames = activity_frames + 1;
+                    index = 0;
+                end else if (bytes[0] == "M" && index == 22) begin
                     if (bytes[0] !== "M" || bytes[1] !== "," ||
                         bytes[7] !== "," || bytes[13] !== "," ||
                         bytes[19] !== "," || bytes[21] !== 8'h0d ||
@@ -79,7 +114,10 @@ module metrics_uart_monitor #(
                     index = index + 1;
                 end
             end
-        end
+          end
+          begin @(posedge rst); end
+        join_any
+        disable decode_byte;
     end
 endmodule
 
@@ -124,9 +162,9 @@ module tb_uart_metrics_sender;
         begin
             for (j = 0; j < 23; j = j + 1) begin
                 @(negedge clk);
+                while (!tx_tvalid) @(negedge clk);
                 tx_tready = 1;
                 @(posedge clk);
-                while (!tx_tvalid) @(posedge clk);
                 if (tx_tdata !== expected[183-j*8 -: 8])
                     $fatal(1, "Byte %0d: esperado %02h, recebido %02h (%s)",
                            j, expected[183-j*8 -: 8], tx_tdata, expected);
@@ -158,7 +196,7 @@ module tb_uart_metrics_sender;
         repeat (3) @(negedge clk);
         rst = 0;
         pulse(0);
-        repeat (3) @(negedge clk);
+        while (!tx_tvalid) @(negedge clk);
         stalled_byte = tx_tdata;
         pulse(1);
         pulse(2);
@@ -302,7 +340,7 @@ module tb_metrics_uart;
                    attempt_count != a || completed != d) begin
                 @(negedge clk);
                 cycles = cycles + 1;
-                if (cycles > 400000)
+                if (cycles > 2000000)
                     $fatal(1, "Metricas ausentes: esperado %0d/%0d/%0d/%0d, recebido %0d/%0d/%0d/%0d",
                            c,w,a,d,correct_count,wrong_count,attempt_count,completed);
             end
@@ -319,7 +357,7 @@ module tb_metrics_uart;
     endtask
 
     initial begin
-        #100_000_000;
+        #500_000_000;
         $fatal(1, "Timeout na integracao FPGA -> PC");
     end
 
@@ -417,6 +455,7 @@ module tb_metrics_uart;
         play_key(0);
         await_metrics(1,0,1,0);
         no_new_frames;
+        if (monitor.activity_frames == 0) $fatal(1, "Nenhum frame T integrado");
         $display("PASS: tb_metrics_uart (UART 8N1 no fio, tentativas, acordes, conclusao e reset)");
         $finish;
     end

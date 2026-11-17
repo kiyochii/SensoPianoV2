@@ -20,7 +20,7 @@ fi
 
 tests=(tb_debouncer tb_key_register tb_music_rom tb_fd tb_uc
        tb_mode_controller tb_uart_key_sender tb_uart_tx
-       tb_uart_metrics_sender tb_metrics_uart tb_top tb_audio_output)
+       tb_uart_metrics_sender tb_uart_activity_sender tb_metrics_uart tb_top tb_audio_output)
 if [[ ${1:-} == --list ]]; then
     printf '%s\n' "${tests[@]}"
     exit 0
@@ -57,7 +57,7 @@ trap 'rm -rf "$test_dir"' EXIT
 log_dir=${TEST_LOG_DIR:-$test_dir}
 sources=(top.v fd.v uc.v mode_controller.v
          modules/uart/uart_tx.v modules/uart/uart_key_sender.v
-         modules/uart/uart_metrics_sender.v
+         modules/uart/uart_metrics_sender.v modules/uart/uart_activity_sender.v
          modules/utils/debounce.v modules/utils/key_register.v modules/utils/music_rom.v)
 passed=0
 failed=0
@@ -65,7 +65,7 @@ for test_name in "${selected[@]}"; do
     case "$test_name" in
         tb_debouncer) test_source=modules/utils/tb/tb_debounce.v ;;
         tb_key_register|tb_music_rom) test_source=modules/utils/tb/$test_name.v ;;
-        tb_uart_key_sender|tb_uart_tx) test_source=modules/uart/tb/$test_name.v ;;
+        tb_uart_key_sender|tb_uart_tx|tb_uart_activity_sender) test_source=modules/uart/tb/$test_name.v ;;
         tb_uart_metrics_sender|tb_metrics_uart) test_source=tb_metrics_uart.v ;;
         *) test_source=$test_name.v ;;
     esac

@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <Preferences.h>
 #include <WebServer.h>
 #include <esp_system.h>
 #include "config.h"
@@ -46,11 +47,38 @@ String noteJson(const senso::Note& n) {
     if (!n.available) return "null";
     return String("{\"raw\":") + n.raw + ",\"pitch\":" + n.pitch + ",\"octave\":" + n.octave + "}";
 }
+String activityJson(const senso::Activity& a) {
+    if (!a.available) return "null";
+    return String("{\"sequence\":") + a.sequence + ",\"fpgaMs\":" + a.fpgaMs +
+        ",\"session\":" + a.session + ",\"epoch\":" + a.epoch + ",\"keys\":" + a.keys +
+        ",\"pressed\":" + a.pressed + ",\"released\":" + a.released +
+        ",\"mode\":" + a.mode + ",\"state\":" + a.state + ",\"expected\":" + a.expected +
+        ",\"flags\":" + a.flags + ",\"dropped\":" + a.dropped +
+        ",\"continuous\":" + (a.continuous ? "true}" : "false}");
+}
+String timingJson(const senso::Timing& t) {
+    if (!t.count) return "null";
+    return String("{\"count\":") + t.count + ",\"meanMs\":" + String(t.mean, 2) +
+        ",\"minMs\":" + t.minimum + ",\"maxMs\":" + t.maximum +
+        ",\"stddevMs\":" + String(t.deviation(), 2) + "}";
+}
+String performanceJson(const senso::Performance& p) {
+    String json = String("{\"presses\":") + p.presses + ",\"chords\":" + p.chords +
+        ",\"streak\":" + p.streak + ",\"bestStreak\":" + p.bestStreak +
+        ",\"startedMs\":" + p.startedMs + ",\"elapsedMs\":" + p.elapsedMs + ",\"activeMs\":" + p.activeMs +
+        ",\"finished\":" + (p.finished ? "true" : "false") +
+        ",\"incomplete\":" + (p.incomplete ? "true" : "false") +
+        ",\"hold\":" + timingJson(p.hold) + ",\"interval\":" + timingJson(p.interval) +
+        ",\"response\":" + timingJson(p.response) + ",\"solve\":" + timingJson(p.solve) + ",\"perKey\":[";
+    for (unsigned i = 0; i < 12; ++i) { if (i) json += ','; json += p.perKey[i]; }
+    return json + "]}";
+}
 String eventJson(const senso::Event& e) {
     String result = String("{\"id\":") + e.id + ",\"ms\":" + e.ms +
         ",\"source\":\"" + (e.source ? "metrics" : "notes") + "\",\"type\":\"";
     if (e.kind == senso::Kind::Note) result += "note\",\"note\":" + noteJson(e.note);
     else if (e.kind == senso::Kind::Metrics) result += "metrics\",\"metrics\":" + metricsJson(e.metrics);
+    else if (e.kind == senso::Kind::Activity) result += "activity\",\"activity\":" + activityJson(e.activity);
     else result += "raw\"";
     if (e.length) {
         static const char hex[] = "0123456789ABCDEF";
@@ -86,19 +114,27 @@ void eventsHandler() {
     for (uint32_t id = first; id <= latest && count < 32; ++id) batch[count++] = telemetry.get(id);
     auto metrics = telemetry.metrics;
     auto note = telemetry.note;
+    auto activity = telemetry.activity.latest;
+    auto performance = telemetry.activity.stats;
+    uint32_t missing = telemetry.activity.missing;
+    uint32_t activityReceivedMs = telemetry.activityReceivedMs;
     uint32_t noteBytes = telemetry.noteBytes, metricsBytes = telemetry.metricsBytes;
     uint32_t invalidNotes = telemetry.invalidNotes, invalidLines = telemetry.invalidLines;
     uint32_t uartErrors = telemetry.uartErrors;
     xSemaphoreGive(telemetryMutex);
     uint32_t next = count ? batch[count - 1].id : cursor;
     String json;
-    json.reserve(8000);
+    json.reserve(14000);
     json = "{\"boot\":\"" + bootId + "\",\"reset\":" + (reset ? "true" : "false") +
         ",\"next\":" + next + ",\"latest\":" + latest + ",\"dropped\":" + dropped +
         ",\"uptimeMs\":" + millis() + ",\"note\":" + noteJson(note) +
-        ",\"metrics\":" + metricsJson(metrics) + ",\"rx\":{\"notes\":" + noteBytes +
+        ",\"metrics\":" + metricsJson(metrics) + ",\"activity\":" + activityJson(activity) +
+        ",\"activityAgeMs\":" + (activity.available ? String(millis() - activityReceivedMs) : String("null")) +
+        ",\"performance\":" + (activity.available ? performanceJson(performance) : String("null")) +
+        ",\"rx\":{\"notes\":" + noteBytes +
         ",\"metrics\":" + metricsBytes + ",\"invalidNotes\":" + invalidNotes +
-        ",\"invalidLines\":" + invalidLines + ",\"uartErrors\":" + uartErrors + "},\"events\":[";
+        ",\"invalidLines\":" + invalidLines + ",\"uartErrors\":" + uartErrors +
+        ",\"activityMissing\":" + missing + "},\"events\":[";
     for (size_t i = 0; i < count; ++i) {
         if (i) json += ',';
         json += eventJson(batch[i]);
@@ -106,6 +142,24 @@ void eventsHandler() {
     json += "]}";
     server.sendHeader("Cache-Control", "no-store");
     server.send(200, "application/json", json);
+}
+// Keep family settings across restarts as one atomic NVS string.
+void profileHandler() {
+    Preferences prefs;
+    if (!prefs.begin("family", false)) {
+        server.send(503, "text/plain", "Perfil indisponivel"); return;
+    }
+    if (server.method() == HTTP_POST) {
+        const String body = server.arg("plain");
+        if (body.isEmpty() || body.length() > 1024 || !body.startsWith("{") || !body.endsWith("}")) {
+            server.send(400, "text/plain", "Perfil invalido"); return;
+        }
+        if (prefs.putString("profile", body) != body.length()) {
+            server.send(503, "text/plain", "Falha ao salvar"); return;
+        }
+    }
+    server.sendHeader("Cache-Control", "no-store");
+    server.send(200, "application/json", prefs.getString("profile", "{}"));
 }
 void setup() {
     Serial.begin(115200);
@@ -133,6 +187,8 @@ void setup() {
         server.send_P(200, "text/html; charset=utf-8", WEBAPP);
     });
     server.on("/api/events", HTTP_GET, eventsHandler);
+    server.on("/api/profile", HTTP_GET, profileHandler);
+    server.on("/api/profile", HTTP_POST, profileHandler);
     server.onNotFound([]() { server.send(404, "text/plain", "Nao encontrado"); });
     server.begin();
     Serial.printf("SensoPiano: Wi-Fi %s / senha %s\n", AP_SSID, AP_PASSWORD);

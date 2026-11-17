@@ -1,17 +1,33 @@
-<!doctype html>
-<html lang="pt-BR">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SensoPiano · Monitor</title>
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SensoPiano · Espaço da família</title>
 <style>
-:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#10151d;color:#edf3fc}*{box-sizing:border-box}body{max-width:1050px;margin:auto;padding:28px 18px}header{display:flex;justify-content:space-between;align-items:center;gap:20px}h1{margin-bottom:4px;font-size:28px}p{color:#a6b4c9}#connection{color:#ffc875}section{background:#1a2330;border:1px solid #304054;border-radius:16px;padding:22px;margin:20px 0}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.value{display:block;font-size:30px;margin-top:8px}label,small{color:#a6b4c9}progress{width:100%;height:16px;accent-color:#65dfb2}#piano{display:flex;gap:3px;height:115px;margin-top:18px}.key{flex:1;background:#eaf0f8;color:#1a2330;border-radius:0 0 7px 7px;display:flex;align-items:end;justify-content:center;padding-bottom:12px;font-size:12px}.key.black{background:#35435a;color:white}.key.active{background:#65dfb2;color:#10151d}#lastNote{font-size:36px;color:#65dfb2}#warning{color:#ffc875;white-space:pre-line}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:290px;overflow:auto;font-size:12px;color:#c4d3e8}button{background:#304054;color:#edf3fc;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}#rx{line-height:1.8}@media(max-width:600px){.cards{grid-template-columns:repeat(2,1fr)}header{align-items:start;flex-direction:column}.key{font-size:10px}}
+*{box-sizing:border-box}body{margin:0;background:#f6f7f3;color:#25443b;font:15px/1.5 system-ui,sans-serif}aside{position:fixed;inset:0 auto 0 0;width:210px;background:white;border-right:1px solid #dce5de;padding:30px 18px}b.logo{display:block;font-size:23px;margin-bottom:32px}.logo i{background:#236759;color:white;border-radius:9px;padding:3px 7px;font-style:normal}nav{display:grid;gap:5px;margin-top:25px}button,select,input,textarea{font:inherit;color:inherit;border:1px solid #cbdad1;border-radius:8px;padding:8px 12px;background:white}button{cursor:pointer}nav button{text-align:left;border:0}button.chosen,.mint{background:#e3f0e9}header,main,footer{margin-left:210px;padding:16px clamp(16px,4vw,64px)}header{background:white;display:flex;justify-content:space-between;gap:10px;font-size:13px}h1,h2,h3,p{margin:0 0 10px}h1{font-size:clamp(24px,3vw,36px);font-weight:550}h2{font-size:19px}small,label,footer{color:#567064}.panel,article,details{background:white;border:1px solid #e1e7df;border-radius:14px;padding:20px;margin:12px 0}.mint{background:#e3f0e9}.cards,.pair{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}.pair{grid-template-columns:1fr 1fr}.value,strong.big{display:block;font-size:24px}.barset,#piano,.keyboard{display:flex;gap:5px;align-items:stretch}.barset{height:135px;align-items:end}.barset div{flex:1;text-align:center;font-size:12px}.barset i{display:block;background:#83ad9f;border-radius:4px;margin:4px auto;width:75%}.keyboard span,.key{flex:1;text-align:center;background:#eaf1e9;padding:12px 0;border-radius:5px;font-size:12px}.keyboard span:nth-child(3n){background:#f4ead9}.key.active,.primary{background:#276c5b;color:white}.listrow{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;border:0;border-top:1px solid #e3eae5;border-radius:0;text-align:left}.badge{background:#e4efe8;border-radius:12px;padding:2px 8px;font-size:12px}.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}input,textarea{max-width:100%}label{display:grid;gap:5px;margin:10px 0}pre{white-space:pre-wrap;max-height:240px;overflow:auto}#warning{color:#965e1c}[hidden]{display:none!important}@media(max-width:800px){aside{position:static;width:auto;padding:12px}.logo{display:inline!important}aside small,aside p{display:none}nav{display:flex;flex-wrap:wrap;margin:8px 0 0}main,header,footer{margin:0}.cards{grid-template-columns:1fr 1fr}.pair{grid-template-columns:1fr}}
 </style>
-<header><div><h1>SensoPiano</h1><p>Notas e aprendizado em tempo real</p></div><span id="connection" role="status">Conectando ao ESP32…</span></header>
+<aside><b class="logo"><i>♬</i> SensoPiano</b><p id="childSide">Criança</p><small>ESPAÇO DA FAMÍLIA</small><nav><button data-page="home">◈ Visão geral</button><button data-page="sessions">♫ Atividades e sessões</button><button data-page="profile">♧ Perfil da criança</button></nav></aside>
+<header><span>⌂　Espaço da família</span><span id="connection" role="status">Conectando ao ESP32…</span></header><main>
+<div id="home"><h1 id="greeting">Visão geral</h1><p>Próximas descobertas musicais, no tempo da criança.</p><article class="mint"><h2>Cada avanço, uma nova descoberta.</h2><p id="insight"></p></article><div class="cards" id="totals"></div><div class="pair"><article><h2>O ritmo da semana</h2><p>Toques nos últimos sete dias</p><div class="barset" id="bars"></div></article><article><h2>Jeitos de explorar</h2><p>Toques por tecla</p><div class="keyboard" id="homeKeys"></div></article></div><article><h2>Últimas sessões</h2><div id="recent"></div></article></div>
+<div id="sessions" hidden><h1>Atividades e sessões</h1><p>Registre uma atividade enquanto o piano está conectado.</p><article class="actions"><select id="activity"><option>Exploração livre</option><option>Melodia guiada</option></select><button class="primary" id="record">Iniciar sessão</button><button id="export">Exportar registros</button><span id="recordState" role="status"></span></article><article><h2>Sessões</h2><select id="filter"><option>Todas as atividades</option><option>Exploração livre</option><option>Melodia guiada</option></select><div id="history"></div></article></div>
+<div id="detail" hidden><button data-page="sessions">← Atividades e sessões</button><h1 id="detailTitle"></h1><p id="detailDate"></p><div id="detailStats" class="cards"></div><article><h2>Resumos das atividades na FPGA</h2><p>Tempos desde o início de cada atividade na placa; podem incluir toques anteriores à gravação neste navegador.</p><div id="detailTiming"></div></article><div class="pair"><article><h2>Os sons explorados</h2><div class="keyboard" id="detailKeys"></div></article><article><h2>O que a família percebeu</h2><label>Observação da sessão<textarea id="observation" maxlength="600"></textarea></label><button id="saveObservation">Salvar observação</button></article></div></div>
+<div id="profile" hidden><h1>Perfil da criança</h1><div class="pair"><article><h2>Identificação</h2><form id="profileForm"><label>Nome da criança<input id="child" maxlength="60" required></label><label>Quem acompanha<input id="family" maxlength="60"></label><label>Preferências para começar<textarea id="preference" maxlength="180"></textarea></label><button class="primary" id="profileSave" disabled>Salvar perfil no ESP32</button></form></article><article class="mint"><h2>O que ajuda por aqui</h2><p id="help"></p></article></div></div>
+<details><summary>Monitor do piano em tempo real</summary>
 <p id="warning" role="alert"></p>
-<section><label>Última nota recebida</label><div id="lastNote">—</div><div id="piano" aria-label="Notas da última oitava recebida"></div><p>O protocolo envia eventos de nota, sem mensagem de soltura da tecla.</p></section>
+<section><label>Última nota enviada pela FPGA (inclui notas guia)</label><div id="lastNote">—</div><p id="physicalState">Aguardando telemetria das teclas físicas</p><div id="piano" aria-label="Teclas físicas pressionadas"></div></section>
+<section><h2>Tempos e exploração</h2><p id="timingScope">Atualize a FPGA e o ESP32 para receber os tempos dos toques.</p><div class="cards">
+<div><label>Toques físicos</label><strong class="value" id="physicalPresses">—</strong></div>
+<div><label>Duração média do toque</label><strong class="value" id="holdMean">—</strong></div>
+<div><label>Intervalo médio entre toques</label><strong class="value" id="intervalMean">—</strong></div>
+<div><label>Variação dos intervalos (desvio padrão)</label><strong class="value" id="intervalDeviation">—</strong></div>
+<div><label>Primeira resposta à nota guia</label><strong class="value" id="responseMean">—</strong></div>
+<div><label>Tempo médio até acertar a nota</label><strong class="value" id="solveMean">—</strong></div>
+<div><label>Maior sequência de acertos</label><strong class="value" id="bestStreak">—</strong></div>
+<div><label>Episódios com várias teclas</label><strong class="value" id="chordCount">—</strong></div>
+<div><label>Tempo da atividade</label><strong class="value" id="activityElapsed">—</strong></div>
+<div><label>Tempo com alguma tecla pressionada</label><strong class="value" id="activeTime">—</strong></div>
+</div><p>Tempos medidos na FPGA após o filtro das teclas. A primeira resposta considera a primeira tentativa aceita para cada nota guia; o tempo até acertar inclui os erros anteriores.</p></section>
 <section><div class="cards"><div><label>Acertos</label><strong class="value" id="correct">—</strong></div><div><label>Erros</label><strong class="value" id="wrong">—</strong></div><div><label>Tentativas</label><strong class="value" id="attempts">—</strong></div><div><label>Acurácia</label><strong class="value" id="accuracy">—</strong></div></div><p id="session">Aguardando métricas da FPGA</p><progress id="progress" max="6" value="0" aria-label="Progresso da música"></progress><small>Música atual: 6 notas</small></section>
 <section><h2>Recepção UART</h2><div id="rx">Aguardando dados…</div></section>
 <section><div class="row"><h2>Histórico recebido</h2><button id="clear" type="button">Limpar visualização</button></div><p>Notas, métricas e bytes brutos em hexadecimal. Últimos 150 eventos nesta tela.</p><pre id="log" aria-label="Histórico de eventos"></pre></section>
+</details><p id="notice" role="status"></p></main><footer>SensoPiano · Acompanhamento familiar</footer>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
@@ -24,19 +40,27 @@ const keys = names.map(name => {
   return key;
 });
 let cursor = 0, boot = '', lost = 0, lines = [];
+let physicalReady = false, fpgaEpoch = 0;
 $('clear').onclick = () => { lines = []; $('log').textContent = ''; };
 function noteName(note) { return names[note.pitch] + note.octave; }
+function msText(value) { return value == null ? '—' : Math.round(value) + ' ms'; }
 function render(data) {
   if (data.reset) { cursor = 0; lost = 0; lines = []; }
   lost += data.dropped;
   boot = data.boot;
   if (data.note) {
     $('lastNote').textContent = noteName(data.note);
-    keys.forEach((key,i) => key.classList.toggle('active', i === data.note.pitch));
   } else {
     $('lastNote').textContent = '—';
-    keys.forEach(key => key.classList.remove('active'));
   }
+  const a = data.activity, p = data.performance;
+  const stale = !!a && data.activityAgeMs > 3000;
+  physicalReady = !!a && !stale && data.next === data.latest;
+  fpgaEpoch = a ? a.epoch : 0;
+  keys.forEach((key,i) => key.classList.toggle('active', !!(a && !stale && (a.keys & (1 << i)))));
+  $('physicalState').textContent = stale ? 'Sem atualização da FPGA há mais de 3 segundos · estado atual das teclas desconhecido' : a ? `${a.mode ? 'Aprender' : 'Livre'} · Teclas: ${names.filter((_,i)=>a.keys & (1<<i)).join(', ') || 'nenhuma'}${a.mode ? ' · Guia: ' + noteName({pitch:a.expected & 15,octave:a.expected >> 4}) : ''}` : 'Aguardando telemetria das teclas físicas';
+  $('timingScope').textContent = a ? `Medição desde a troca de modo ou início da atividade · Sessão FPGA ${a.session}${p && p.incomplete ? ' · Dados incompletos: houve perda ou a recepção começou durante a atividade.' : ''}` : 'Atualize a FPGA e o ESP32 para receber os tempos dos toques.';
+  for (const [id,value] of Object.entries({physicalPresses:p?.presses,holdMean:msText(p?.hold?.meanMs),intervalMean:msText(p?.interval?.meanMs),intervalDeviation:msText(p?.interval?.stddevMs),responseMean:msText(p?.response?.meanMs),solveMean:msText(p?.solve?.meanMs),bestStreak:p?.bestStreak,chordCount:p?.chords,activityElapsed:msText(p?.elapsedMs),activeTime:msText(p?.activeMs)})) $(id).textContent = value ?? '—';
   const m = data.metrics;
   for (const field of ['correct','wrong','attempts']) $(field).textContent = m ? m[field] : '—';
   $('accuracy').textContent = m && m.attempts ? (100 * m.correct / m.attempts).toFixed(1) + '%' : '—';
@@ -44,11 +68,12 @@ function render(data) {
   $('session').textContent = !m ? 'Aguardando métricas da FPGA' : m.done ? 'Música concluída' : `Progresso: ${m.correct} de 6 notas`;
   const rx = data.rx;
   $('rx').textContent = `Notas: ${rx.notes} bytes · Métricas: ${rx.metrics} bytes · Notas inválidas: ${rx.invalidNotes} · Linhas inválidas: ${rx.invalidLines} · Erros UART: ${rx.uartErrors}`;
-  $('warning').textContent = [lost ? `${lost} eventos saíram do histórico do ESP32 antes da leitura. Os totais exibidos estão atualizados.` : '', rx.uartErrors ? 'A UART detectou erros. Confira ligação, baud rate e volume de dados.' : ''].filter(Boolean).join('\n');
+  $('warning').textContent = [lost ? `${lost} eventos saíram do histórico do ESP32 antes da leitura. O monitor mantém os totais do ESP32; o registro do navegador pode estar incompleto.` : '', rx.uartErrors ? 'A UART detectou erros. Confira ligação, baud rate e volume de dados.' : '', rx.activityMissing ? `${rx.activityMissing} observações da FPGA não foram recebidas. Tempos que atravessam perdas são descartados.` : '', p?.incomplete ? 'As métricas desta atividade estão incompletas.' : ''].filter(Boolean).join('\n');
   for (const event of data.events) {
     let value = event.hex ? `HEX ${event.hex}` : '';
     if (event.type === 'note') value += ` · ${noteName(event.note)}`;
     if (event.type === 'metrics') value = JSON.stringify(event.metrics);
+    if (event.type === 'activity') value = `FPGA ${event.activity.fpgaMs} ms · teclas 0x${event.activity.keys.toString(16).padStart(3,'0')} · sessão ${event.activity.session} · flags ${event.activity.flags}`;
     lines.push(`#${event.id} ${(event.ms / 1000).toFixed(3)}s ${event.source} · ${value}`);
   }
   lines = lines.slice(-150);
@@ -56,6 +81,7 @@ function render(data) {
     $('log').textContent = lines.join('\n');
     $('log').scrollTop = $('log').scrollHeight;
   }
+  if (typeof capture === "function") capture(data);
   cursor = data.next;
 }
 async function poll() {
@@ -72,6 +98,7 @@ async function poll() {
     if (data.next < data.latest) wait = 0;
   } catch (error) {
     $('connection').textContent = 'Sem conexão · tentando novamente…';
+    if (typeof online !== 'undefined') online = false;
     $('connection').style.color = '#ffc875';
     wait = 1500;
   } finally {
@@ -81,4 +108,137 @@ async function poll() {
 }
 poll();
 </script>
-</html>
+<script>
+const pitches=['Dó','Dó♯','Ré','Ré♯','Mi','Fá','Fá♯','Sol','Sol♯','Lá','Lá♯','Si'];
+let records=[],selected=null,page='home',online=false;
+try { records=JSON.parse(localStorage.getItem('senso.sessions')||'[]'); }
+catch { $('notice').textContent='Não foi possível ler os registros deste navegador.'; }
+function persist(){
+  try { localStorage.setItem('senso.sessions',JSON.stringify(records)); }
+  catch { $('notice').textContent='Armazenamento indisponível. Exporte os registros antes de fechar.'; }
+}
+function active(){return records.find(r=>r.end===null);}
+function duration(r){return Math.round(((r.end??Date.now())-r.start)/1000);}
+function time(s){return s<60?s+' s':Math.floor(s/60)+' min '+s%60+' s';}
+function date(t){return new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
+function node(tag,value,cls){
+  const el=document.createElement(tag);el.textContent=value;if(cls)el.className=cls;return el;
+}
+function cards(id,items){
+  $(id).replaceChildren(...items.map(([label,value])=>{
+    const el=node('article','');el.append(node('small',label),node('strong',value,'big'));return el;
+  }));
+}
+function keyboard(id,counts){
+  $(id).replaceChildren(...counts.map((count,i)=>{
+    const el=node('span',count);el.append(document.createElement('br'),pitches[i]);return el;
+  }));
+}
+function rows(id,items){
+  $(id).replaceChildren();
+  if(!items.length) $(id).append(node('p','Nenhuma sessão registrada.'));
+  items.forEach(r=>{
+    const b=node('button','','listrow');b.append(node('span',date(r.start)),node('span',r.activity,'badge'),node('span',r.end===null?'Em andamento':time(duration(r))),node('span','↗'));
+    b.onclick=()=>{selected=r;$('observation').value=r.observation;show('detail');};$(id).append(b);
+  });
+}
+function show(next){
+  page=next;for(const id of ['home','sessions','detail','profile']) $(id).hidden=id!==page;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('chosen',b.dataset.page===(page==='detail'?'sessions':page)));
+  draw();
+}
+function draw(){
+  if(page==='sessions'){
+    rows('history',records.filter(r=>$('filter').selectedIndex===0||r.activity===$('filter').value));
+    $('record').textContent=active()?'Encerrar sessão':'Iniciar sessão';
+    $('recordState').textContent=active()?'Gravando neste navegador':'';
+  }
+  if(page==='home'){
+    const week=new Date();week.setHours(0,0,0,0);week.setDate(week.getDate()-6);
+    const recent=records.filter(r=>r.start>=week.getTime());
+    const seconds=recent.reduce((n,r)=>n+duration(r),0);
+    const counts=pitches.map((_,i)=>recent.reduce((n,r)=>n+(r.physical?r.keys[i]:0),0));
+    cards('totals',[['Sessões na semana',recent.length],['Tempo com o piano',time(seconds)],['Duração média',recent.length?time(Math.round(seconds/recent.length)):'—'],['Teclas exploradas',counts.filter(Boolean).length+' de 12']]);
+    keyboard('homeKeys',counts);rows('recent',records.slice(0,3));
+    const days=Array.from({length:7},(_,i)=>{const d=new Date(week);d.setDate(d.getDate()+i);return d;});
+    const values=days.map(d=>recent.reduce((n,r)=>n+(r.physical?(r.daily?.[d.toLocaleDateString('pt-BR')]||0):0),0));
+    $('bars').replaceChildren(...days.map((d,i)=>{const el=node('div',values[i]),bar=node('i','');bar.style.height=(2+75*values[i]/Math.max(1,...values))+'px';el.append(bar,d.toLocaleDateString('pt-BR',{weekday:'short'}));return el;}));
+    $('insight').textContent=recent.length?'Nesta semana, foram registrados '+counts.reduce((a,b)=>a+b,0)+' toques no piano.':'Inicie uma sessão em Atividades e sessões para acompanhar as primeiras notas.';
+  }
+  if(page==='detail'&&selected){
+    const r=selected;$('detailTitle').textContent=r.activity;$('detailDate').textContent=date(r.start);
+    cards('detailStats',[['Duração',time(duration(r))],['Teclas exploradas',r.keys.filter(Boolean).length+' de 12'],[r.physical?'Toques físicos registrados':'Eventos legados (incluem guias)',r.keys.reduce((a,b)=>a+b,0)],['Última métrica de acertos',r.metrics?r.metrics.correct+' / '+r.metrics.attempts:'—']]);keyboard('detailKeys',r.keys);
+    $('detailDate').textContent += r.incomplete ? ' · Registro incompleto' : '';
+    $('detailTiming').replaceChildren();
+    if(!r.fpgaSegments?.length) $('detailTiming').append(node('p','Sem resumo de tempos disponível.'));
+    for(const segment of r.fpgaSegments||[]) {
+      const p=segment.performance;
+      $('detailTiming').append(node('p',`${segment.mode ? 'Aprender' : 'Livre'} · Sessão FPGA ${segment.session} · ${p.presses} toques · duração média ${msText(p.hold?.meanMs)} · primeira resposta ${msText(p.response?.meanMs)} · até acertar ${msText(p.solve?.meanMs)}${p.incomplete ? ' · Dados incompletos' : ''}`));
+    }
+  }
+}
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>show(b.dataset.page));
+$('filter').onchange=draw;
+$('record').onclick=()=>{
+  if(active()) active().end=Date.now();
+  else {
+    if(!online||!boot||!physicalReady){$('notice').textContent='Aguarde a telemetria das teclas físicas para iniciar. Confira se a FPGA e o ESP32 estão atualizados.';return;}
+    records.unshift({start:Date.now(),end:null,activity:$('activity').value,physical:true,boot,fpgaEpoch,last:cursor,keys:Array(12).fill(0),daily:{},observation:'',metrics:null,incomplete:false});
+  }
+  persist();draw();
+};
+function capture(data){
+  online=true;
+  const r=active();if(!r)return;
+  if(r.boot!==data.boot){r.end=r.lastSeen||r.start;persist();draw();return;}
+  if(data.dropped) r.incomplete=true;
+  let changed=false;
+  for(const e of data.events){
+    if(e.id<=r.last)continue;
+    r.last=e.id;changed=true;
+    const at=Date.now()-((data.uptimeMs-e.ms)>>>0);
+    if(at<r.start)continue;
+    if(e.type==='activity'){
+      const a=e.activity;
+      if(r.fpgaEpoch!==a.epoch){r.end=r.lastSeen||r.start;r.incomplete=true;break;}
+      if(!a.continuous) r.incomplete=true;
+      const day=new Date(at).toLocaleDateString('pt-BR');
+      for(let i=0;i<12;i++) if(a.pressed & (1<<i)) {
+        r.keys[i]++;r.daily[day]=(r.daily[day]||0)+1;
+      }
+    }
+    if(e.type==='metrics') r.metrics=e.metrics;
+  }
+  if(r.end===null && data.activity && data.performance && data.activity.epoch===r.fpgaEpoch) {
+    const a=data.activity,p=data.performance;
+    r.fpgaSegments??=[];
+    const key=`${a.epoch}:${a.mode}:${a.session}:${p.startedMs}`;
+    const summary={key,mode:a.mode,session:a.session,performance:p};
+    const index=r.fpgaSegments.findIndex(s=>s.key===key);
+    if(index<0) r.fpgaSegments.push(summary); else r.fpgaSegments[index]=summary;
+    changed=true;
+  }
+  if(changed){r.lastSeen=Date.now();persist();draw();}
+}
+$('saveObservation').onclick=()=>{selected.observation=$('observation').value;persist();$('notice').textContent='Observação atualizada neste navegador.';};
+$('export').onclick=()=>{
+  const url=URL.createObjectURL(new Blob([JSON.stringify(records,null,2)],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download='sessoes-sensopiano.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+function applyProfile(p){
+  for(const k of ['child','family','preference']) $(k).value=typeof p[k]==='string'?p[k]:'';
+  $('childSide').textContent=$('child').value||'Criança';
+  $('greeting').textContent=$('child').value?'Vamos acompanhar '+$('child').value+'?':'Visão geral';
+  $('help').textContent=$('preference').value||'Registre o que ajuda a criança antes de começar a tocar.';
+}
+async function loadProfile(){
+  try{const res=await fetch('/api/profile',{cache:'no-store'});if(!res.ok)throw Error();applyProfile(await res.json());$('profileSave').disabled=false;}
+  catch{$('notice').textContent='Aguardando o perfil do ESP32.';setTimeout(loadProfile,4000);}
+}
+$('profileForm').onsubmit=async e=>{
+  e.preventDefault();const p={child:$('child').value.trim(),family:$('family').value.trim(),preference:$('preference').value.trim()};
+  try{const res=await fetch('/api/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});if(!res.ok)throw Error();applyProfile(await res.json());$('notice').textContent='Perfil salvo no ESP32.';}
+  catch{$('notice').textContent='Falha ao salvar. Confira a conexão e tente novamente.';}
+};
+show('home');loadProfile();
+</script></html>

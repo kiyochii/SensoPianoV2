@@ -1,7 +1,7 @@
 # Testbenches do SensoPianoV2
 
-A suite valida os dez modulos Verilog do repositorio, individualmente e em
-integracao. Sao **12 testbenches com verificacao automatica**: resultados
+A suite valida os onze modulos Verilog do repositorio, individualmente e em
+integracao. Sao **13 testbenches com verificacao automatica**: resultados
 inesperados encerram a simulacao com `$fatal(1, ...)`; cada teste tem um
 limite de tempo simulado e so anuncia `PASS` ao concluir as verificacoes.
 O runner tambem exige esse marcador, alem do codigo de saida zero.
@@ -80,13 +80,14 @@ inclui os tempos medidos e o log apos a mudanca.
 | `tb_music_rom` — `modules/utils/tb/tb_music_rom.v` | `music_rom` | Todas as 64 combinacoes de musica e indice, incluindo notas, comprimentos e retorno zero para indices fora da musica. |
 | `tb_fd` — `tb_fd.v` | `fluxo_dados` | Todos os 4.096 vetores: nenhuma tecla, 12 teclas individuais e 4.083 acordes; saidas `key_any`, `key_valid`, `key_error`; sincronizacao, carga, retencao e reset integrados. |
 | `tb_uc` — `tb_uc.v` | `UC` | Estados SCAN/REGISTER/WAIT_RELEASE; carga e pulso de um ciclo; tecla mantida; bloqueio de acorde e liberacao parcial; rearme; prioridade de erro; reset em REGISTER e WAIT_RELEASE. |
-| `tb_mode_controller` — `tb_mode_controller.v` | `mode_controller` | Modo Livre nas 12 teclas; notas, oitava, LEDs e RGB; silencio e acorde; inicio com tecla mantida; erro sem avancar; seis acertos; sequencia C3/D4/E5/C#6/E5/F6; conclusao; nova sessao; cancelamento e reset. |
+| `tb_mode_controller` — `tb_mode_controller.v` | `mode_controller` | Modo Livre nas 12 teclas; notas, oitava, LEDs de uma cor; silencio e acorde; inicio com tecla mantida; erro sem avancar; seis acertos; sequencia C3/D4/E5/C#6/E5/F6; conclusao; nova sessao; cancelamento e reset. |
 | `tb_uart_key_sender` — `modules/uart/tb/tb_uart_key_sender.v` | `uart_key_sender` | As 96 combinacoes de 12 notas e oito oitavas; byte `{0,oitava,nota}`; estabilidade com `ready=0`; descarte de pulso com byte pendente; um handshake por byte; reset e recuperacao. |
 | `tb_uart_tx` — `modules/uart/tb/tb_uart_tx.v` | `uart_tx` | 518 quadros completos: todos os 256 bytes nos divisores 1 e 2; `00/FF/55/AA` no divisor 54; `A5` em 65535; `81` apos reset. Verifica cada ciclo de start/dados LSB-first/stop, duracao dos bits, `busy`, `ready` e repouso. Reset interrompe outro quadro parcial. |
+| `tb_uart_activity_sender` — `modules/uart/tb/tb_uart_activity_sender.v` | `uart_activity_sender` | Timestamp com divisor de clock; pressão/soltura com duração conhecida; sessão; FIFO cheia e contagem de perdas; estabilidade em backpressure; checksum XOR; heartbeat e reset. |
 | `tb_uart_metrics_sender` — `tb_metrics_uart.v` | `uart_metrics_sender` | Comparacao dos 23 bytes ASCII; snapshots imutaveis; backpressure entre bytes; agregacao de eventos; acertos, erros e conclusao; 65.535 tentativas reais; saturacao; conclusao apos saturar; prioridades inicio/acerto/erro; nova sessao com linha pendente; reset. |
-| `tb_metrics_uart` — `tb_metrics_uart.v` | `top` → `pc_txd` | Recepcao 8N1 pelo fio em periodo nominal de 115200 baud; formato, CR/LF e soma dos contadores; ausencia de metricas no modo Livre; tecla anterior ao inicio; transicoes curtas; tecla mantida; acordes e liberacao parcial; musica completa; ausencia de duplicatas; nova sessao; reset durante byte e recuperacao. |
+| `tb_metrics_uart` — `tb_metrics_uart.v` | `top` → `pc_txd` | Recepcao 8N1 pelo fio em periodo nominal de 115200 baud; arbitragem de linhas M/T completas, formato, checksum T, CR/LF e soma dos contadores; ausencia de metricas no modo Livre; tecla anterior ao inicio; transicoes curtas; tecla mantida; acordes e liberacao parcial; musica completa; ausencia de duplicatas; nova sessao; reset durante byte e recuperacao. |
 | `tb_top` — `tb_top.v` | Integracao de audio e `esp_txd` | Regressao existente: audio nas teclas 3/7, silencio com acorde, audio no modo Aprender, primeira resposta e bloqueio de acorde; bytes de nota `43`, `47`, `30`, `42` e quantidade total de transmissoes. |
-| `tb_audio_output` — `tb_audio_output.v` | `top` → `audio_pwm` e LEDs | Medicao externa dos semiperiodos alto e baixo nas 12 notas da oitava 4 e nas seis notas da atividade, cobrindo oitavas 3/4/5/6; polaridade ativa baixa dos LEDs/RGB no modo Livre; silencio sem tecla, com acorde, antes de start e apos conclusao; reset durante tom. |
+| `tb_audio_output` — `tb_audio_output.v` | `top` → `audio_pwm` e LEDs | Medicao externa dos semiperiodos alto e baixo nas 12 notas da oitava 4 e nas seis notas da atividade, cobrindo oitavas 3/4/5/6; polaridade ativa baixa dos LEDs de uma cor no modo Livre; silencio sem tecla, com acorde, antes de start e apos conclusao; reset durante tom. |
 
 ## Criterios e escolhas de simulacao
 
