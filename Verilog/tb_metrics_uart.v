@@ -162,9 +162,9 @@ module tb_uart_metrics_sender;
         begin
             for (j = 0; j < 23; j = j + 1) begin
                 @(negedge clk);
+                while (!tx_tvalid) @(negedge clk);
                 tx_tready = 1;
                 @(posedge clk);
-                while (!tx_tvalid) @(posedge clk);
                 if (tx_tdata !== expected[183-j*8 -: 8])
                     $fatal(1, "Byte %0d: esperado %02h, recebido %02h (%s)",
                            j, expected[183-j*8 -: 8], tx_tdata, expected);
@@ -196,7 +196,7 @@ module tb_uart_metrics_sender;
         repeat (3) @(negedge clk);
         rst = 0;
         pulse(0);
-        repeat (3) @(negedge clk);
+        while (!tx_tvalid) @(negedge clk);
         stalled_byte = tx_tdata;
         pulse(1);
         pulse(2);

@@ -1,0 +1,41 @@
+Info: *******************************************************************
+Info: Running Quartus Prime Shell
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Copyright (C) 2020  Intel Corporation. All rights reserved.
+    Info: Your use of Intel Corporation's design tools, logic functions 
+    Info: and other software and tools, and any partner logic 
+    Info: functions, and any output files from any of the foregoing 
+    Info: (including device programming or simulation files), and any 
+    Info: associated documentation or information are expressly subject 
+    Info: to the terms and conditions of the Intel Program License 
+    Info: Subscription Agreement, the Intel Quartus Prime License Agreement,
+    Info: the Intel FPGA IP License Agreement, or other applicable license
+    Info: agreement, including, without limitation, that your use is for
+    Info: the sole purpose of programming logic devices manufactured by
+    Info: Intel and sold by Intel or its authorized distributors.  Please
+    Info: refer to the applicable agreement for further details, at
+    Info: https://fpgasoftware.intel.com/eula.
+    Info: Processing started: Tue Nov 17 13:37:11 2026
+Info: Command: quartus_sh --archive -no_discover -output SensoPiano_DE0_CV.qar SensoPiano_DE0_CV
+Info: Quartus(args): -qar -no_discover -output SensoPiano_DE0_CV.qar SensoPiano_DE0_CV
+Info: qar.tcl version #1
+Info: Including '-use_file_set basic' by default
+Info: File Set 'Source control' contains:
+    Info: Project source and settings files
+    Info: Automatically detected source files
+Warning: Hierarchical Platform Designer systems and custom IP components(_hw.tcl and associated files) are not archived by the Quartus Archiver
+Warning: Excluding 'Automatically detected source files' The Quartus Prime software may not be able to automatically locate all project files.
+Info: Archive will store files relative to the closest common parent directory
+Info (13213): Using common directory C:/Users/henri/AppData/Local/Temp/SensoPiano_final_fhl6ksw0/
+Info: ----------------------------------------------------------
+Info: ----------------------------------------------------------
+Info: Generated archive 'SensoPiano_DE0_CV.qar'
+Info: ----------------------------------------------------------
+Info: ----------------------------------------------------------
+Info: Generated report 'SensoPiano_DE0_CV.archive.rpt'
+Info (23030): Evaluation of Tcl script c:/intelfpga_lite/20.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 2 warnings
+    Info: Peak virtual memory: 4828 megabytes
+    Info: Processing ended: Tue Nov 17 13:37:12 2026
+    Info: Elapsed time: 00:00:01
+    Info: Total CPU time (on all processors): 00:00:02

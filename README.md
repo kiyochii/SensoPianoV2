@@ -5,7 +5,10 @@
 São **12 LEDs de uma única cor**, um por tecla. No modo Livre acendem
 conforme as teclas pressionadas; no modo Aprender indicam a próxima nota.
 As saídas `piano_leds_n` usam GPIO_0 D12–D23 e são ativas em nível baixo.
-A cor depende do LED instalado. Consulte a [pinagem](Quartus/PINAGEM.md).
+A cor depende do LED instalado. Consulte a [pinagem](Quartus/PINAGEM.md) e a
+[montagem física](Quartus/MONTAGEM.md). O projeto pronto para restaurar está
+no [arquivo QAR](Entregas/SensoPiano_DE0_CV.qar), com as tabelas também em
+[PDF](Entregas/SensoPiano_pinagem_e_montagem.pdf).
 
 ## ESP32 e webapp
 
@@ -126,8 +129,10 @@ Os executaveis de teste sao criados em diretorio temporario.
 Para uma instalacao portatil do Icarus, o script tambem aceita `IVERILOG` e
 `VVP` com os caminhos dos executaveis e `IVL_BASE` com o diretorio `lib/ivl`.
 
-Os testes sao simulacoes; ainda e necessario compilar no Quartus, conferir
-timing/pinagem e validar a recepcao com a placa e o adaptador reais.
+Além das simulações, a versão atual foi compilada no Quartus Lite 20.1.1:
+timing interno de 50 MHz atendido e 42 atribuições de pinos conferidas.
+Consulte o [registro de compilação](docs/testes/compilacao-quartus-2026-11-17.md).
+A recepção com as placas e o adaptador reais ainda precisa de ensaio físico.
 O debounce original esta configurado com `DEBOUNCE_TIME_MS=0`; ajuste-o
 para os botoes fisicos antes do ensaio, pois contatos mecanicos podem gerar
 tentativas repetidas. O firmware ESP32 e o webapp local estao descritos em [ESP32/README.md](ESP32/README.md). MQTT nao e utilizado.

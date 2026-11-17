@@ -3,6 +3,7 @@ set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CEBA4F23C7
 set_global_assignment -name TOP_LEVEL_ENTITY sensopiano_de0_cv
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 4
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
 set_global_assignment -name SDC_FILE SensoPiano_DE0_CV.sdc
 set_global_assignment -name VERILOG_FILE sensopiano_de0_cv.v
@@ -17,87 +18,99 @@ set_global_assignment -name VERILOG_FILE ../Verilog/modules/uart/uart_tx.v
 set_global_assignment -name VERILOG_FILE ../Verilog/modules/uart/uart_key_sender.v
 set_global_assignment -name VERILOG_FILE ../Verilog/modules/uart/uart_metrics_sender.v
 set_global_assignment -name VERILOG_FILE ../Verilog/modules/uart/uart_activity_sender.v
-set_location_assignment PIN_M9 -to {CLOCK_50}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {CLOCK_50}
-set_location_assignment PIN_U7 -to {KEY[0]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {KEY[0]}
-set_location_assignment PIN_W9 -to {KEY[1]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {KEY[1]}
-set_location_assignment PIN_U13 -to {SW0}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {SW0}
-set_location_assignment PIN_AA2 -to {LEDR[0]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[0]}
-set_location_assignment PIN_AA1 -to {LEDR[1]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[1]}
-set_location_assignment PIN_W2 -to {LEDR[2]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[2]}
-set_location_assignment PIN_Y3 -to {LEDR[3]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[3]}
-set_location_assignment PIN_N2 -to {LEDR[4]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[4]}
-set_location_assignment PIN_N1 -to {LEDR[5]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[5]}
-set_location_assignment PIN_U2 -to {LEDR[6]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[6]}
-set_location_assignment PIN_U1 -to {LEDR[7]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[7]}
-set_location_assignment PIN_L2 -to {LEDR[8]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[8]}
-set_location_assignment PIN_L1 -to {LEDR[9]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {LEDR[9]}
-set_location_assignment PIN_N16 -to {piano_keys[0]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[0]}
-set_location_assignment PIN_R21 -to {piano_leds_n[0]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[0]}
-set_location_assignment PIN_B16 -to {piano_keys[1]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[1]}
-set_location_assignment PIN_T22 -to {piano_leds_n[1]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[1]}
-set_location_assignment PIN_M16 -to {piano_keys[2]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[2]}
-set_location_assignment PIN_N20 -to {piano_leds_n[2]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[2]}
-set_location_assignment PIN_C16 -to {piano_keys[3]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[3]}
-set_location_assignment PIN_N19 -to {piano_leds_n[3]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[3]}
-set_location_assignment PIN_D17 -to {piano_keys[4]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[4]}
-set_location_assignment PIN_M22 -to {piano_leds_n[4]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[4]}
-set_location_assignment PIN_K20 -to {piano_keys[5]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[5]}
-set_location_assignment PIN_P19 -to {piano_leds_n[5]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[5]}
-set_location_assignment PIN_K21 -to {piano_keys[6]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[6]}
-set_location_assignment PIN_L22 -to {piano_leds_n[6]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[6]}
-set_location_assignment PIN_K22 -to {piano_keys[7]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[7]}
-set_location_assignment PIN_P17 -to {piano_leds_n[7]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[7]}
-set_location_assignment PIN_M20 -to {piano_keys[8]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[8]}
-set_location_assignment PIN_P16 -to {piano_leds_n[8]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[8]}
-set_location_assignment PIN_M21 -to {piano_keys[9]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[9]}
-set_location_assignment PIN_M18 -to {piano_leds_n[9]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[9]}
-set_location_assignment PIN_N21 -to {piano_keys[10]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[10]}
-set_location_assignment PIN_L18 -to {piano_leds_n[10]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[10]}
-set_location_assignment PIN_R22 -to {piano_keys[11]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_keys[11]}
-set_location_assignment PIN_L17 -to {piano_leds_n[11]}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {piano_leds_n[11]}
-set_location_assignment PIN_L19 -to {esp_txd}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {esp_txd}
-set_location_assignment PIN_K17 -to {pc_txd}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {pc_txd}
-set_location_assignment PIN_K19 -to {audio_pwm}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {audio_pwm}
-set_location_assignment PIN_V13 -to {SW1}
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to {SW1}
+set_global_assignment -name MISC_FILE PINAGEM.md
+set_global_assignment -name MISC_FILE MONTAGEM.md
+set_global_assignment -name MISC_FILE README.md
+set_global_assignment -name MISC_FILE ../Entregas/SensoPiano_pinagem.csv
+set_global_assignment -name MISC_FILE ../Entregas/SensoPiano_pinagem_e_montagem.pdf
+set_global_assignment -name MISC_FILE ../Entregas/SensoPiano_DE0_CV.sof
+set_global_assignment -name MISC_FILE ../docs/testes/compilacao-quartus-2026-11-17.md
+set_global_assignment -name MISC_FILE ../Entregas/README.md
+set_global_assignment -name MISC_FILE ../Entregas/relatorios_quartus/compilacao.log
+set_global_assignment -name MISC_FILE ../Entregas/relatorios_quartus/SensoPiano_DE0_CV.fit.summary
+set_global_assignment -name MISC_FILE ../Entregas/relatorios_quartus/SensoPiano_DE0_CV.sta.summary
+set_global_assignment -name MISC_FILE ../Entregas/relatorios_quartus/SensoPiano_DE0_CV.pin
+set_location_assignment PIN_M9 -to "CLOCK_50"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "CLOCK_50"
+set_location_assignment PIN_U7 -to "KEY[0]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "KEY[0]"
+set_location_assignment PIN_W9 -to "KEY[1]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "KEY[1]"
+set_location_assignment PIN_U13 -to "SW0"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "SW0"
+set_location_assignment PIN_AA2 -to "LEDR[0]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[0]"
+set_location_assignment PIN_AA1 -to "LEDR[1]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[1]"
+set_location_assignment PIN_W2 -to "LEDR[2]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[2]"
+set_location_assignment PIN_Y3 -to "LEDR[3]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[3]"
+set_location_assignment PIN_N2 -to "LEDR[4]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[4]"
+set_location_assignment PIN_N1 -to "LEDR[5]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[5]"
+set_location_assignment PIN_U2 -to "LEDR[6]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[6]"
+set_location_assignment PIN_U1 -to "LEDR[7]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[7]"
+set_location_assignment PIN_L2 -to "LEDR[8]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[8]"
+set_location_assignment PIN_L1 -to "LEDR[9]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "LEDR[9]"
+set_location_assignment PIN_N16 -to "piano_keys[0]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[0]"
+set_location_assignment PIN_R21 -to "piano_leds_n[0]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[0]"
+set_location_assignment PIN_B16 -to "piano_keys[1]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[1]"
+set_location_assignment PIN_T22 -to "piano_leds_n[1]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[1]"
+set_location_assignment PIN_M16 -to "piano_keys[2]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[2]"
+set_location_assignment PIN_N20 -to "piano_leds_n[2]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[2]"
+set_location_assignment PIN_C16 -to "piano_keys[3]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[3]"
+set_location_assignment PIN_N19 -to "piano_leds_n[3]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[3]"
+set_location_assignment PIN_D17 -to "piano_keys[4]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[4]"
+set_location_assignment PIN_M22 -to "piano_leds_n[4]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[4]"
+set_location_assignment PIN_K20 -to "piano_keys[5]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[5]"
+set_location_assignment PIN_P19 -to "piano_leds_n[5]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[5]"
+set_location_assignment PIN_K21 -to "piano_keys[6]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[6]"
+set_location_assignment PIN_L22 -to "piano_leds_n[6]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[6]"
+set_location_assignment PIN_K22 -to "piano_keys[7]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[7]"
+set_location_assignment PIN_P17 -to "piano_leds_n[7]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[7]"
+set_location_assignment PIN_M20 -to "piano_keys[8]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[8]"
+set_location_assignment PIN_P16 -to "piano_leds_n[8]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[8]"
+set_location_assignment PIN_M21 -to "piano_keys[9]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[9]"
+set_location_assignment PIN_M18 -to "piano_leds_n[9]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[9]"
+set_location_assignment PIN_N21 -to "piano_keys[10]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[10]"
+set_location_assignment PIN_L18 -to "piano_leds_n[10]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[10]"
+set_location_assignment PIN_R22 -to "piano_keys[11]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_keys[11]"
+set_location_assignment PIN_L17 -to "piano_leds_n[11]"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "piano_leds_n[11]"
+set_location_assignment PIN_L19 -to "esp_txd"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "esp_txd"
+set_location_assignment PIN_K17 -to "pc_txd"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "pc_txd"
+set_location_assignment PIN_K19 -to "audio_pwm"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "audio_pwm"
+set_location_assignment PIN_V13 -to "SW1"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to "SW1"

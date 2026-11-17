@@ -23,6 +23,10 @@ O dispositivo selecionado e **5CEBA4F23C7**, correspondente a DE0-CV.
 
 Esta pinagem externa e uma proposta; nao foi inferida da fiacao existente.
 Os pinos FPGA individuais estao em [PINAGEM.md](PINAGEM.md).
+As ligações de contatos, resistores, LEDs e UARTs estão na
+[tabela de montagem física](MONTAGEM.md). A versão para impressão está em
+[PDF](../Entregas/SensoPiano_pinagem_e_montagem.pdf), e a planilha em
+[CSV](../Entregas/SensoPiano_pinagem.csv).
 Use GND comum, resistores/drivers adequados aos LEDs e nao conecte
 alto-falante diretamente a um GPIO. Os pinos de alimentacao do conector
 nao sao sinais GPIO. Confira sua orientacao no manual antes de ligar.
@@ -34,21 +38,34 @@ ficam internas, sem atribuicoes automaticas a pinos da placa.
 
 ## Compilar e criar o QAR
 
-Na pasta `Quartus`, com Quartus no PATH:
+O arquivo pronto está em [Entregas/SensoPiano_DE0_CV.qar](../Entregas/SensoPiano_DE0_CV.qar).
+Foi gerado pelo **Quartus Prime Lite 20.1.1 Build 720**, para a versão com
+LEDs de uma única cor e telemetria temporal.
+
+Para restaurar, use **Project > Restore Archived Project** e selecione uma
+pasta vazia. Abra `Quartus/SensoPiano_DE0_CV.qpf` dentro da pasta restaurada.
+O arquivo inclui fontes Verilog, QPF/QSF/SDC, tabelas e o `.sof` validado.
+O firmware do ESP32 permanece no projeto `ESP32/fw` deste repositório.
+
+Para recompilar e criar outro arquivo, na pasta `Quartus`, com Quartus no PATH:
 
 ```sh
 quartus_sh --flow compile SensoPiano_DE0_CV
-quartus_sh --archive SensoPiano_DE0_CV
+quartus_sh --archive -self_test SensoPiano_DE0_CV
 ```
 
 A segunda linha gera `SensoPiano_DE0_CV.qar`. Pela interface, use
 **Project > Archive Project**. Para programar a placa, use o `.sof`
 gerado em `output_files/`, pelo Programmer/USB-Blaster.
 
-Os arquivos QPF/QSF/SDC foram preparados sem Quartus instalado.
-Nao ha `.qar` ou `.sof` gerado, nem validacao de fitting/timing ou ensaio
-fisico. As excecoes SDC cobrem apenas portas externas assincronas; o
-caminho interno continua restrito pelo clock de 20 ns.
+A compilação completa foi concluída com **0 erros**; o timing interno atende
+**50 MHz**, com pior folga de setup de **+5,436 ns**. As 42 atribuições de
+pinos foram conferidas no relatório do Fitter. O `.sof` está em
+[Entregas/SensoPiano_DE0_CV.sof](../Entregas/SensoPiano_DE0_CV.sof).
+Os [resultados e avisos de compilação](../docs/testes/compilacao-quartus-2026-11-17.md)
+detalham a validação. Não houve gravação nem ensaio físico nesta execução.
+As exceções SDC cobrem as interfaces assíncronas externas; a análise de tempo
+citada é do circuito interno sob o clock de 20 ns.
 
 Referencia de dispositivo, polaridades e pinos:
 [Manual Terasic DE0-CV, tabelas 3-2 a 3-7](https://pages.hmc.edu/harris/class/e85/old/fall24/de0_manual.pdf).
